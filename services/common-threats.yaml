@@ -5,13 +5,6 @@ threats:
       An attacker can exploit misconfigured access controls to gain
       unauthorized access to sensitive resources by granting excessive privileges.
     features:
-<<<<<<< Updated upstream
-      - CCC.F06
-    mitre_attack: 
-      - TA0005
-      - T1562
-  - id: CCC.TH02
-=======
       - CCC.F06 # Identity Based Access Control
     mitre_attack:
       - T1078 # Valid Accounts
@@ -22,7 +15,6 @@ threats:
       - T1546 # Event Triggered Execution
 
   - id: CCC.TH02 # Vendor-hosted keys are compromised
->>>>>>> Stashed changes
     title: Vendor-hosted keys are compromised
     description: |
       The service uses a vendor-hosted key management service (KMS) to manage
@@ -32,29 +24,16 @@ threats:
       - CCC.F01
       - CCC.F02
     mitre_attack:
-<<<<<<< Updated upstream
-      - TA0006
-      - T1556.006
-  - id: CCC.TH03
-=======
       - T1556 # Modify Authentication Process
       - T1098.001 # Account Manipulation: Additional Cloud Credentials
       - T1078.004 # Valid Accounts: Cloud Accounts
 
   - id: CCC.TH03 # Attacker intercepts data in transit
->>>>>>> Stashed changes
     title: Attacker intercepts data in transit
     description: |
       The service allows unencrypted communication (e.g., HTTP). An attacker
       can intercept traffic between clients and the service to read or modify
       the data during transmission.
-<<<<<<< Updated upstream
-    features: # TODO: Add a feature related to web traffic?
-    mitre_attack:
-      - TA009
-      - T1557
-  - id: CCC.TH04
-=======
     features:
       - CCC.F01
     mitre_attack:
@@ -62,7 +41,6 @@ threats:
       - T1040 # Network Sniffing
 
   - id: CCC.TH04 # Attacker encrypts data with client-managed keys
->>>>>>> Stashed changes
     title: Attacker encrypts data with client-managed keys
     description: |
       The service provides encryption mechanisms, but the encryption keys are
@@ -74,34 +52,21 @@ threats:
       - CCC.F01
       - CCC.F02
     mitre_attack:
-<<<<<<< Updated upstream
-      - TA0040
-      - T1486
-  - id: CCC.TH05
-    title: Actors in known dangerous regions attempt to access data
-=======
       - T1486 # Data Encrypted for Impact
       - T1485 # Data Destruction
       - T1070 # Indicator Removal on Host
 
   - id: CCC.TH05 # Actors in known dangerous regions intercept network activity
     title: # Actors in known dangerous regions intercept network activity
->>>>>>> Stashed changes
     description: |
       If the service is deployed in a region with known geopolitical risks, an
       attacker in that region may attempt to access the resource by exploiting
       privileged network access or other vulnerabilities.
-<<<<<<< Updated upstream
-    features: # TODO: Something about multi-region deployment?
-    mitre_attack:
-      - TA0042
-      - T1583
-=======
     features:
       - CCC.F08
     mitre_attack:
       - T1583 # Acquire Infrastructure
-      - T1588.003 # Obtain Network Infrastructure
+      - T1040 # Network Sniffing
 
   - id: CCC.TH06 # Resource exhaustion
     title: Resource exhaustion
@@ -132,7 +97,7 @@ threats:
       - CCC.F07 # Event Notifications
       - CCC.F09 # Monitoring
     mitre_technique:
-      - T1057
+      - T1057 # Process Discovery
 
   - id: CCC.TH08 # Data corruption during replication
     title: Data corruption during replication
@@ -150,4 +115,3 @@ threats:
       - T1565 # Data Manipulation
       - T1491 # Defacement
       - T1490 # Inhibit System Recovery
->>>>>>> Stashed changes
