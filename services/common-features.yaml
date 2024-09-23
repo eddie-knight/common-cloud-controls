@@ -69,15 +69,7 @@ features:
   - id: CCC.F15
     title: Cost Management
     description: |
-<<<<<<< Updated upstream
-      Providing the ability to filter spending and to detect cost anomalies for the service.
-=======
-<<<<<<< Updated upstream
-      Providing the ability to filter spending and to detect cost anomalies by the service.
-=======
       Provides the ability to filter spending and to detect cost anomalies for the service.
->>>>>>> Stashed changes
->>>>>>> Stashed changes
   - id: CCC.F16
     title: Budgeting
     description: |
@@ -89,13 +81,7 @@ features:
   - id: CCC.F18
     title: Versioning
     description: |
-<<<<<<< Updated upstream
-      Providing the ability to maintain multiple versions of the same resource.
-<<<<<<< Updated upstream
-=======
-=======
       Provides the ability to maintain multiple versions of the same resource.
->>>>>>> Stashed changes
   - id: CCC.F19
     title: On-Demand Scaling
     description: |
@@ -104,12 +90,8 @@ features:
     title: Tagging
     description: |
       Provide the ability to tag a resource to effectively manage and gain insights of the resource.
-<<<<<<< Updated upstream
-=======
   - id: CCC.F21
     title: Data Replication
     description: |
       Provides the ability to copy data to multiple locations to ensure data
       availability and durability.
->>>>>>> Stashed changes
->>>>>>> Stashed changes
