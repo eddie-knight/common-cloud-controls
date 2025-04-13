@@ -9,71 +9,6 @@ shared-controls:
       - CCC.C06 # Prevent deployment in restricted regions
 
 control-families:
-  - name: Network Security
-    description: 'TODO: Describe this control family'
-    controls:
-      - id: CCC.MLDE.C07
-        title: Restrict Public IP Access on MLDE Instances
-        objective: |
-          Prevent public IP access to MLDE instances to reduce exposure to the internet and enhance security.
-        requirements:
-          - id: CCC.MLDE.C07.TR01
-            text: |
-              Verify that MLDE instances containing sensitive data cannot be accessed via public IP addresses.
-            applicability:
-              - tlp_red
-            recommendation: ""
-          - id: CCC.MLDE.C07.TR02
-            text: |
-              For MLDE instances without sensitive data requiring public access,
-              ensure that appropriate security controls are in place and access is approved.
-            applicability:
-              - tlp_red
-              - tlp_amber
-              - tlp_green
-              - tlp_clear
-            recommendation: ""
-        threat-mappings:
-          - reference-id: CCC
-            identifiers:
-              - CCC.MLDE.TH02
-              - CCC.VPC.TH02
-        guideline-mappings:
-          - reference-id: NIST-CSF
-            identifiers:
-              - PR.AC-3
-      - id: CCC.MLDE.C08
-        title: Restrict Virtual Networks for MLDE Instances
-        objective: |
-          Limit the virtual networks that can be used when creating new MLDE instances to
-          ensure they are deployed within approved and secure network environments.
-        requirements:
-          - id: CCC.MLDE.C08.TR01
-            text: |
-              Verify that MLDE instances containing sensitive data can only be deployed in
-              approved virtual networks with appropriate security controls.
-            applicability:
-              - tlp_red
-            recommendation: ""
-          - id: CCC.MLDE.C08.TR02
-            text: |
-              Ensure that MLDE instances without sensitive data are deployed in
-              networks that meet organizational security standards.
-            applicability:
-              - tlp_red
-              - tlp_amber
-              - tlp_green
-              - tlp_clear
-            recommendation: ""
-        threat-mappings:
-          - reference-id: CCC
-            identifiers:
-              - CCC.MLDE.TH01
-              - CCC.TH01
-        guideline-mappings:
-          - reference-id: NIST-CSF
-            identifiers:
-              - PR.AC-4
   - name: Identity and Access Management
     description: 'TODO: Describe this control family'
     controls:
@@ -104,6 +39,18 @@ control-families:
           - reference-id: NIST-CSF
             identifiers:
               - PR.AC-3
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.9.1.1
+              - 2013 A.9.2.1
+          - reference-id: NIST_800_53
+            identifiers:
+              - AC-2
+              - AC-3
+          - reference-id: CCM
+            identifiers:
+              - IAM-01
+              - IAM-02
       - id: CCC.MLDE.C03
         title: Disable Root Access on MLDE Instances
         objective: |
@@ -134,6 +81,16 @@ control-families:
           - reference-id: NIST-CSF
             identifiers:
               - PR.AC-4
+          - reference-id: NIST_800_53
+            identifiers:
+              - AC-6
+          - reference-id: CCM
+            identifiers:
+              - IAM-08
+              - IAM-12
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.9.2.3
       - id: CCC.MLDE.C04
         title: Disable Terminal Access on MLDE Instances
         objective: |
@@ -164,6 +121,15 @@ control-families:
           - reference-id: NIST-CSF
             identifiers:
               - PR.AC-4
+          - reference-id: NIST_800_53
+            identifiers:
+              - AC-6
+          - reference-id: CCM
+            identifiers:
+              - IAM-08
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.9.2.3
   - name: Data Protection
     description: 'TODO: Describe this control family'
     controls:
@@ -196,6 +162,17 @@ control-families:
           - reference-id: NIST-CSF
             identifiers:
               - PR.DS-5
+          - reference-id: CCM
+            identifiers:
+              - DSI-05
+              - DSI-07
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.13.2.1
+          - reference-id: NIST_800_53
+            identifiers:
+              - SC-7
+              - SC-8
   - name: Configuration Management
     description: 'TODO: Describe this control family'
     controls:
@@ -226,6 +203,15 @@ control-families:
           - reference-id: NIST-CSF
             identifiers:
               - PR.IP-1
+          - reference-id: CCM
+            identifiers:
+              - TVM-02
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.12.5.1
+          - reference-id: NIST_800_53
+            identifiers:
+              - CM-2
   - name: Vulnerability Management
     description: 'TODO: Describe this control family'
     controls:
@@ -259,3 +245,96 @@ control-families:
           - reference-id: NIST-CSF
             identifiers:
               - PR.IP-12
+          - reference-id: CCM
+            identifiers:
+              - TVM-01
+              - TVM-02
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.12.6.1
+          - reference-id: NIST_800_53
+            identifiers:
+              - SI-2
+  - name: Network Security
+    description: 'TODO: Describe this control family'
+    controls:
+      - id: CCC.MLDE.C07
+        title: Restrict Public IP Access on MLDE Instances
+        objective: |
+          Prevent public IP access to MLDE instances to reduce exposure to the internet and enhance security.
+        requirements:
+          - id: CCC.MLDE.C07.TR01
+            text: |
+              Verify that MLDE instances containing sensitive data cannot be accessed via public IP addresses.
+            applicability:
+              - tlp_red
+            recommendation: ""
+          - id: CCC.MLDE.C07.TR02
+            text: |
+              For MLDE instances without sensitive data requiring public access,
+              ensure that appropriate security controls are in place and access is approved.
+            applicability:
+              - tlp_red
+              - tlp_amber
+              - tlp_green
+              - tlp_clear
+            recommendation: ""
+        threat-mappings:
+          - reference-id: CCC
+            identifiers:
+              - CCC.MLDE.TH02
+              - CCC.VPC.TH02
+        guideline-mappings:
+          - reference-id: NIST-CSF
+            identifiers:
+              - PR.AC-3
+          - reference-id: CCM
+            identifiers:
+              - SEF-05
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.13.1.1
+          - reference-id: NIST_800_53
+            identifiers:
+              - SC-7
+      - id: CCC.MLDE.C08
+        title: Restrict Virtual Networks for MLDE Instances
+        objective: |
+          Limit the virtual networks that can be used when creating new MLDE instances to
+          ensure they are deployed within approved and secure network environments.
+        requirements:
+          - id: CCC.MLDE.C08.TR01
+            text: |
+              Verify that MLDE instances containing sensitive data can only be deployed in
+              approved virtual networks with appropriate security controls.
+            applicability:
+              - tlp_red
+            recommendation: ""
+          - id: CCC.MLDE.C08.TR02
+            text: |
+              Ensure that MLDE instances without sensitive data are deployed in
+              networks that meet organizational security standards.
+            applicability:
+              - tlp_red
+              - tlp_amber
+              - tlp_green
+              - tlp_clear
+            recommendation: ""
+        threat-mappings:
+          - reference-id: CCC
+            identifiers:
+              - CCC.MLDE.TH01
+              - CCC.TH01
+        guideline-mappings:
+          - reference-id: NIST-CSF
+            identifiers:
+              - PR.AC-4
+          - reference-id: CCM
+            identifiers:
+              - IAM-12
+          - reference-id: ISO_27001
+            identifiers:
+              - 2013 A.9.1.2
+          - reference-id: NIST_800_53
+            identifiers:
+              - AC-6
