@@ -37,7 +37,7 @@ Before you begin, ensure the following tools are installed:
 3. [**Git**](https://git-scm.com/downloads) - For version control and repository management.
 4. [**Docker**](https://docs.docker.com/engine/install/) - Used for PDF generation.
 
-Additionally, install the **Go VS Code Extension** for a better development experience:  
+Additionally, install the **Go VS Code Extension** for a better development experience:
 [Install here](https://marketplace.visualstudio.com/items?itemName=golang.go).  
 ![VS Code Extensions](imgs/delivery_toolkit/image-6.png)
 

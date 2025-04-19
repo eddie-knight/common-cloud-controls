@@ -52,14 +52,14 @@ This definition emphasizes that a threat focuses on potential adverse impacts, n
 
 #### Examples
 
-**Good Example**:  
+**Good Example**:
 **Title**: Access Control is Misconfigured  
-**Description**:  
+**Description**:
 Misconfigured access controls may grant excessive privileges or fail to restrict unauthorized access to sensitive resources. This could result in unintended data exposure or unauthorized actions being performed within the system.
 
-**Bad Example**:  
+**Bad Example**:
 **Title**: Access Control is Misconfigured  
-**Description**:  
+**Description**:
 An attacker can exploit misconfigured access controls to gain excessive privileges or unauthorized access to sensitive resources. This could lead to data breaches or malicious actions within the system.
 
 ### Best Practices
