@@ -129,7 +129,7 @@
               }
             }
           },
-          "required": ["name", "description", "controls"],
+          "required": ["name", "description"],
           "additionalProperties": false
         }
       }
