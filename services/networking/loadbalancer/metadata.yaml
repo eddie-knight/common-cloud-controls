@@ -10,7 +10,6 @@ metadata:
   applicability-categories: []
   mapping-references: []
 
-
 release_details:
   - version: "2024.09"
     assurance_level: None
