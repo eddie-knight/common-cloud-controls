@@ -19,7 +19,8 @@ control-families:
         title: Enforce Use of Private Endpoints for Serverless Function
         objective: |
           Ensure that the serverless function is accessible only through a private endpoint,
-          allowing it to communicate securely within a virtual private network and preventing unauthorized external access.
+          allowing it to communicate securely within a virtual private network and preventing
+          unauthorized external access.
         requirements:
           - id: CCC.SvlsComp.C01.TR01
             text: |
@@ -51,8 +52,9 @@ control-families:
         requirements:
           - id: CCC.SvlsComp.C02.TR01
             text: |
-              Send requests to invoke the function up to the allowed threshold and confirm they are successful;
-              then send additional requests exceeding the threshold from the same entity and verify that they are denied.
+              Send requests to invoke the function up to the allowed threshold and confirm they
+              are successful; then send additional requests exceeding the threshold from the same
+              entity and verify that they are denied.
             applicability:
               - tlp_red
               - tlp_amber
