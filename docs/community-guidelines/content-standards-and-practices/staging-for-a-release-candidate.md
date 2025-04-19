@@ -54,10 +54,10 @@ Threats for a given service typically reside in a `threats.yaml` file (e.g., `se
 
 2. **Add Any Missing Common Threats**
 
-   - Review the [shared-threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-threats.yaml) to see the full list of common threats.
+   - Review the [shared-threats.yaml](/services/shared-threats.yaml) to see the full list of common threats.
    - In `threats.yaml`, find or create a top-level `common_threats` key.
    - Add references to any relevant common threats not already included.
-   - See an example of a fully populated list in the [object storage threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/storage/object/threats.yaml).
+   - See an example of a fully populated list in the [object storage threats.yaml](/services/storage/object/threats.yaml).
 
 3. **Add Any Missing Service-Specific Threats**
 
@@ -75,7 +75,7 @@ Threats for a given service typically reside in a `threats.yaml` file (e.g., `se
    - Make sure newly added items fit into the numerical sequence without breaking existing references.
 
 6. **Final Review Against the Style Guide**
-   - Refer to the [Threat Definitions Style Guide](https://github.com/finos/common-cloud-controls/blob/main/docs/community-guidelines/content-standards-and-practices/threat-definitions.md).
+   - Refer to the [Threat Definitions Style Guide](/docs/community-guidelines/content-standards-and-practices/threat-definitions.md).
    - Check titles, descriptions, and formatting match these standards.
 
 ---
@@ -91,10 +91,10 @@ Controls for a given service typically reside in a `controls.yaml` file (e.g., `
 
 2. **Add Any Missing Common Controls**
 
-   - Review the [shared-controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-controls.yaml).
+   - Review the [shared-controls.yaml](/services/shared-controls.yaml).
    - In your `controls.yaml`, find or create a top-level `common_controls` key.
    - Add references to any relevant common controls not already included.
-   - See the [object storage controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/storage/object/controls.yaml) for an example.
+   - See the [object storage controls.yaml](/services/storage/object/controls.yaml) for an example.
 
 3. **Add Any Missing Service-Specific Controls**
 
@@ -110,7 +110,7 @@ Controls for a given service typically reside in a `controls.yaml` file (e.g., `
    - Ensure the IDs are in the correct numerical order and don’t conflict with existing controls.
 
 6. **Final Review Against the Style Guide**
-   - Refer to the [Control Definitions Style Guide](https://github.com/finos/common-cloud-controls/blob/main/docs/community-guidelines/content-standards-and-practices/control-definitions.md).
+   - Refer to the [Control Definitions Style Guide](/docs/community-guidelines/content-standards-and-practices/control-definitions.md).
    - Validate all controls and their testing requirements align with these standards.
 
 ---
@@ -144,20 +144,20 @@ Controls for a given service typically reside in a `controls.yaml` file (e.g., `
 ## Additional Resources
 
 - **Common Threats**
-  [services/shared-threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-threats.yaml)
+  [services/shared-threats.yaml](/services/shared-threats.yaml)
 
 - **Common Controls**
-  [services/shared-controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-controls.yaml)
+  [services/shared-controls.yaml](/services/shared-controls.yaml)
 
 - **Example Completed Service**
 
-  - Threats: [services/storage/object/threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/storage/object/threats.yaml)
-  - Controls: [services/storage/object/controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/storage/object/controls.yaml)
+  - Threats: [services/storage/object/threats.yaml](/services/storage/object/threats.yaml)
+  - Controls: [services/storage/object/controls.yaml](/services/storage/object/controls.yaml)
 
 - **Style Guides**
 
-  - [Threat Definitions](https://github.com/finos/common-cloud-controls/blob/main/docs/community-guidelines/content-standards-and-practices/threat-definitions.md)
-  - [Control Definitions](https://github.com/finos/common-cloud-controls/blob/main/docs/community-guidelines/content-standards-and-practices/control-definitions.md)
+  - [Threat Definitions](/docs/community-guidelines/content-standards-and-practices/threat-definitions.md)
+  - [Control Definitions](/docs/community-guidelines/content-standards-and-practices/control-definitions.md)
 
 - **Contact & Discussion**
   - If you have questions or need clarification, contact the Security Working Group or open a discussion/issue on the repository.
