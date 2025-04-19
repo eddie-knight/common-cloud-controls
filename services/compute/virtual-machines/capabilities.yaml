@@ -169,4 +169,4 @@ capabilities:
     title: TPM Support
     description: |
       Providing support for Trusted Platform Module (TPM) for hardware-based
-      security features such as secure boot and cryptographic key storage.
+      security capabilities such as secure boot and cryptographic key storage.

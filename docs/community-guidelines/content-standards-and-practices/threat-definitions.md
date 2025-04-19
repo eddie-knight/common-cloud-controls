@@ -1,6 +1,6 @@
 # Threat Definitions
 
-This document outlines potential security threats for specific service categories within the CCC Taxonomy. It serves as a reference to ensure that threats are consistently documented, mapped to relevant features, and integrated into threat models.
+This document outlines potential security threats for specific service categories within the CCC Taxonomy. It serves as a reference to ensure that threats are consistently documented, mapped to relevant capabilities, and integrated into threat models.
 
 Each threat definition corresponds to a service in the CCC Taxonomy, with every threat linked to a specific feature and relevant threat models.
 
@@ -77,7 +77,7 @@ When creating a new threat definition, use the following values:
 - **Threat ID** (`id`): A unique identifier for the threat, following the format `<category-id>.TH<#>`.
 - **Threat Title** (`title`): A short name or title using Title Case that succinctly describes the threat.
 - **Threat Description** (`description`): A detailed description of the threat, including its nature and potential impact.
-- **Feature IDs** (`features`): A list of IDs for the corresponding CCC features that this threat is associated with.
+- **Feature IDs** (`capabilities`): A list of IDs for the corresponding CCC capabilities that this threat is associated with.
 - **MITRE ATT&CK Technique** (`mitre_technique`): The unique identifier for the most relevant MITRE ATT&CK Technique.
 - **Threat Models** (`threat_models`): URLs for any threat models used to develop this threat (omit if not applicable).
 
@@ -87,7 +87,7 @@ Although a review from the [Communications WG] is optional, it may be useful if 
 
 This structure ensures that threats are standardized and can be consistently identified and addressed across all services within the CCC Taxonomy.
 
-[common threats]: /services/common-threats.yaml
+[common threats]: /services/shared-threats.yaml
 [Communications WG]: ../../governance/working-groups/communications/charter.md
 [Delivery Toolkit]: /delivery-toolkit
 [threats template]: ../../resources/templates/threats.yaml

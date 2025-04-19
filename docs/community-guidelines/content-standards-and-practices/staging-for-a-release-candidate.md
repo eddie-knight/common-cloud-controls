@@ -23,9 +23,9 @@ This guide explains how to audit and update threats and controls for a specific 
 When preparing a cloud service (e.g., `services/networking/loadbalancer`) for a release candidate, you will:
 
 1. **Identify & validate existing threats** (both common and service-specific).
-2. **Remove duplicates** by leveraging the “common-threats” reference.
+2. **Remove duplicates** by leveraging the “shared-threats” reference.
 3. **Identify & validate existing controls** (both common and service-specific).
-4. **Remove duplicates** by leveraging the “common-controls” reference.
+4. **Remove duplicates** by leveraging the “shared-controls” reference.
 5. **Confirm ID ordering** and naming consistency.
 6. **Ensure adherence to style guides** for threats and controls.
 
@@ -49,12 +49,12 @@ Threats for a given service typically reside in a `threats.yaml` file (e.g., `se
 
 1. **Check Alignment With Service Capabilities**
 
-   - Open `features.yaml` in the same directory (e.g., `services/networking/loadbalancer/features.yaml`).
-   - Ensure existing threats in `threats.yaml` correspond to these features. Confirm IDs, titles, and descriptions are consistent and relevant.
+   - Open `capabilities.yaml` in the same directory (e.g., `services/networking/loadbalancer/capabilities.yaml`).
+   - Ensure existing threats in `threats.yaml` correspond to these capabilities. Confirm IDs, titles, and descriptions are consistent and relevant.
 
 2. **Add Any Missing Common Threats**
 
-   - Review the [common-threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/common-threats.yaml) to see the full list of common threats.
+   - Review the [shared-threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-threats.yaml) to see the full list of common threats.
    - In `threats.yaml`, find or create a top-level `common_threats` key.
    - Add references to any relevant common threats not already included.
    - See an example of a fully populated list in the [object storage threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/storage/object/threats.yaml).
@@ -66,7 +66,7 @@ Threats for a given service typically reside in a `threats.yaml` file (e.g., `se
 
 4. **Remove Duplications**
 
-   - If a threat already exists in `common-threats.yaml` but is also listed separately under `threats`, move or reference it under `common_threats` and remove the duplicate.
+   - If a threat already exists in `shared-threats.yaml` but is also listed separately under `threats`, move or reference it under `common_threats` and remove the duplicate.
    - This step ensures we don’t maintain two versions of the same threat.
 
 5. **Check ID Ordering**
@@ -91,19 +91,19 @@ Controls for a given service typically reside in a `controls.yaml` file (e.g., `
 
 2. **Add Any Missing Common Controls**
 
-   - Review the [common-controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/common-controls.yaml).
+   - Review the [shared-controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-controls.yaml).
    - In your `controls.yaml`, find or create a top-level `common_controls` key.
    - Add references to any relevant common controls not already included.
    - See the [object storage controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/storage/object/controls.yaml) for an example.
 
 3. **Add Any Missing Service-Specific Controls**
 
-   - Under the `controls` list, add controls that are specific to your service’s unique threats or features.
+   - Under the `controls` list, add controls that are specific to your service’s unique threats or capabilities.
    - Ensure each new control has a clear and accurate title, description, and testing requirement if appropriate.
 
 4. **Remove Duplications**
 
-   - If a control is already provided in `common-controls.yaml` but also exists as a service-specific control, migrate or reference it under `common_controls` and remove the duplicate from `controls`.
+   - If a control is already provided in `shared-controls.yaml` but also exists as a service-specific control, migrate or reference it under `common_controls` and remove the duplicate from `controls`.
 
 5. **Check ID Ordering**
 
@@ -144,10 +144,10 @@ Controls for a given service typically reside in a `controls.yaml` file (e.g., `
 ## Additional Resources
 
 - **Common Threats**
-  [services/common-threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/common-threats.yaml)
+  [services/shared-threats.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-threats.yaml)
 
 - **Common Controls**
-  [services/common-controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/common-controls.yaml)
+  [services/shared-controls.yaml](https://github.com/finos/common-cloud-controls/blob/main/services/shared-controls.yaml)
 
 - **Example Completed Service**
 
