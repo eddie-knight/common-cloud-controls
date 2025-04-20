@@ -135,6 +135,12 @@ func readAndCompileCatalog() (data CompiledCatalog) {
 	// addControlLink(controlsData.SpecificControls)
 	// addControlLink(commonControlsData.SpecificControls)
 
+	err = setGlobalSharedCatalog()
+	if err != nil {
+		log.Fatalf("error loading shared catalog (%v)", err)
+		return
+	}
+
 	return CompiledCatalog{
 		Metadata:             catalog.Metadata,
 		ReleaseDetails:       catalog.ReleaseDetails,
@@ -203,16 +209,16 @@ func loadContent(directory string) (data layer2.Catalog, err error) {
 	return data, err
 }
 
-func getGlobalSharedCatalog() (globalSharedCatalog layer2.Catalog, err error) {
+func setGlobalSharedCatalog() (err error) {
 	if len(globalSharedCatalog.ControlFamilies) == 0 {
 		// read the common controls, capabilities, and threats from the common entries directory
 		sharedDir := filepath.Join(viper.GetString("services-dir"), "shared")
-		globalSharedCatalog, err = loadContent(filepath.Join(sharedDir, "shared"))
+		globalSharedCatalog, err = loadContent(sharedDir)
 		if err != nil {
-			err = fmt.Errorf("error loading %s (%v)", filepath.Join(sharedDir, "shared"), err)
+			err = fmt.Errorf("error loading %s (%v)", sharedDir, err)
 		}
 	}
-	return globalSharedCatalog, err
+	return err
 }
 
 func getSharedControls(mappings []layer2.Mapping) (shared layer2.ControlFamily) {

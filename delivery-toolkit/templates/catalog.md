@@ -44,11 +44,30 @@ Release Manager - **{{ .LatestReleaseDetails.ReleaseManager.Name }}, {{ .LatestR
 ### {{ .Id }} - {{ .Title }}
 
 {{ .Description }}
-**Related Capabilities:**
-{{ range .Capabilities }}
-- {{ . }}
+
+{{ if .Capabilities -}}
+**Impacted Capabilities:**
+
+| Source | Capability |
+| --- | --- |
+{{- range .Capabilities }}
+  {{- $referenceId := .ReferenceId }}
+  {{- range .Identifiers }}
+| {{ $referenceId }} | {{ . }} |
+  {{- end }}
+{{- end }}
 {{- end }}
 
+**Related Mappings:**
+
+| Source | Capability |
+| --- | --- |
+{{- range .Mappings }}
+  {{- $referenceId := .ReferenceId }}
+  {{- range .Identifiers }}
+| {{ $referenceId }} | {{ . }} |
+  {{- end }}
+{{- end }}
 {{ end }}
 
 ## Controls
@@ -63,37 +82,43 @@ Release Manager - **{{ .LatestReleaseDetails.ReleaseManager.Name }}, {{ .LatestR
 
 ---
 
-{{ range .Controls }}
+{{- range .ControlFamilies }}
+{{ $family := .Title }}
+{{- range .Controls }}
+
 ### {{ .Id }} - {{ .Title }}
 
 {{ .Objective }}
 
-**Control Family:** {{ .ControlFamily}}
+**Control Family:** {{ $family }}
 
-**NIST CSF:** {{ .NISTCSF }}
+{{ if .ThreatMappings -}}
+#### Mitigated Threats
 
-**Mitigated Threats:**
-{{ if .Threats }}
-{{ range .Threats }}
-- {{ . }}
+| Threat Catalog | Mapped Threats |
+| --- | --- |
+{{- range .GuidelineMappings }}
+  {{- $referenceId := .ReferenceId }}
+  {{- range .Identifiers }}
+| {{ $referenceId }} | {{ . }} |
+  {{- end }}
 {{- end }}
-{{- else }}
-_No mitigated threats._
 {{- end }}
 
-**Control Mappings:**
-{{if .ControlMappings}}
-{{ range $key, $value := .ControlMappings }}
-{{- if $value }}
-{{- range $value }}
-- {{ $key }} {{ . }}
+{{ if .GuidelineMappings -}}
+#### Associated Guidelines
+
+| Guideline | Mapped Controls |
+| --- | --- |
+{{- range .GuidelineMappings }}
+  {{- $referenceId := .ReferenceId }}
+  {{- range .Identifiers }}
+| {{ $referenceId }} | {{ . }} |
+  {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
-{{else}}
-_No control mappings added._
-{{end}}
-{{ end }}
+{{- end }}
 
 ## Contributing Organizations
 
