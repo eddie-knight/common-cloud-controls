@@ -1,5 +1,5 @@
 <!-- markdownlint-disable -->
-# {{ .Metadata.ID }} v{{ .LatestReleaseDetails.Version }} ({{ .Metadata.Title }})
+# {{ .Metadata.Id }} v{{ .LatestReleaseDetails.Version }} ({{ .Metadata.Title }})
 
 <img height="250px" src="https://raw.githubusercontent.com/finos/branding/882d52260eb9b85a4097db38b09a52ea9bb68734/project-logos/active-project-logos/Common%20Cloud%20Controls%20Logo/Horizontal/2023_FinosCCC_Horizontal_BLK.svg" alt="CCC Logo"/>
 
@@ -18,15 +18,15 @@ Release Manager - **{{ .LatestReleaseDetails.ReleaseManager.Name }}, {{ .LatestR
 
 ## Capabilities
 
-|Feature ID|Feature Title|
+|Capability ID|Capability Title|
 |----|----|
 {{- range .Capabilities }}
-|[{{ .ID }}](#{{ .Link }})|{{ .Title }}|
+|{{ .Id }}|{{ .Title }}|
 {{- end }}
 
 ---
 {{ range .Capabilities }}
-### {{ .ID }} - {{ .Title }}
+### {{ .Id }} - {{ .Title }}
 
 {{ .Description }}
 {{- end }}
@@ -36,12 +36,12 @@ Release Manager - **{{ .LatestReleaseDetails.ReleaseManager.Name }}, {{ .LatestR
 |Threat ID|Threat Title|
 |----|----|
 {{- range .Threats }}
-|[{{ .ID }}](#{{ .Link }})|{{ .Title }}|
+|{{ .Id }}|{{ .Title }}|
 {{- end }}
 
 ---
 {{ range .Threats }}
-### {{ .ID }} - {{ .Title }}
+### {{ .Id }} - {{ .Title }}
 
 {{ .Description }}
 **Related Capabilities:**
@@ -49,23 +49,22 @@ Release Manager - **{{ .LatestReleaseDetails.ReleaseManager.Name }}, {{ .LatestR
 - {{ . }}
 {{- end }}
 
-**Related MITRE ATT&CK Techniques:**
-{{ range .MITRETechnique }}
-- [{{ . }}](https://attack.mitre.org/techniques/{{ . }})
-{{- end }}
 {{ end }}
 
 ## Controls
 
 |Control ID|Control Title|
 |----|----|
+{{- range .ControlFamilies }}
 {{- range .Controls }}
-|[{{ .ID }}](#{{ .Link }})|{{ .Title }}|
+|{{ .Id }}|{{ .Title }}|
+{{- end }}
 {{- end }}
 
 ---
+
 {{ range .Controls }}
-### {{ .ID }} - {{ .Title }}
+### {{ .Id }} - {{ .Title }}
 
 {{ .Objective }}
 
