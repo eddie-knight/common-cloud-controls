@@ -6,12 +6,12 @@ metadata:
         service to be considered for use in financial services ecosystems.
     version: "2025.07"
     last-modified: "2023-10-05T10:06:00-05:00"
-    mapping_references:
+    mapping-references:
         - id: CCC
           title: Common Cloud Controls
           version: "2025.07"
           url: https://raw.githubusercontent.com/eddie-knight/common-cloud-controls/refs/heads/main/artifacts/CCC_2025.07.yaml
-controlfamilies:
+control-families:
     - title: Identity and Access Management
       description: 'TODO: Describe this control family'
       controls:
