@@ -72,7 +72,7 @@ jobs:
 
       - name: Move YAML artifact to website/static/releases
         run: |
-          yaml_file=$(ls ./delivery-toolkit/artifacts/*.yaml | head -n 1)
+          yaml_file=$(ls ./artifacts/*.yaml | head -n 1)
           filename=$(basename "$yaml_file")
           mkdir -p website/static/releases
           mv "$yaml_file" "website/static/releases/$filename"
