@@ -45,29 +45,56 @@ Release Manager - **{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name 
 
 {{ .Description }}
 
-{{ if .Capabilities -}}
-**Impacted Capabilities:**
-
-| Source | Capability |
-| --- | --- |
-{{- range .Capabilities }}
-  {{- $referenceId := .ReferenceId }}
-  {{- range .Identifiers }}
-| {{ $referenceId }} | {{ . }} |
-  {{- end }}
-{{- end }}
-{{- end }}
-
-**Related Mappings:**
-
-| Source | Mapping |
-| --- | --- |
-{{- range .ExternalMappings }}
-  {{- $referenceId := .ReferenceId }}
-  {{- range .Identifiers }}
-| {{ $referenceId }} | {{ . }} |
-  {{- end }}
-{{- end }}
+<div style="display: flex; width: 100%;">
+  <div style="flex: 1; padding-right: 10px;">
+    {{ if .Capabilities -}}
+    Impacted Capability
+    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ddd; padding: 8px;">Source</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Capability</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{- range .Capabilities }}
+          {{- $referenceId := .ReferenceId }}
+          {{- range .Identifiers }}
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+        </tr>
+          {{- end }}
+        {{- end }}
+      </tbody>
+    </table>
+    {{- end }}
+  </div>
+  <div style="flex: 1; padding-left: 10px;">
+    {{ if .ExternalMappings -}}
+    Related Mapping
+    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ddd; padding: 8px;">Source</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Mapping</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{- range .ExternalMappings }}
+          {{- $referenceId := .ReferenceId }}
+          {{- range .Identifiers }}
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+        </tr>
+          {{- end }}
+        {{- end }}
+      </tbody>
+    </table>
+    {{- end }}
+  </div>
+</div>
 {{ end }}
 
 ## Controls
@@ -83,40 +110,65 @@ Release Manager - **{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name 
 ---
 
 {{- range .ControlFamilies }}
-{{ $family := .Title }}
+### {{ .Title }}
 {{- range .Controls }}
 
-### {{ .Id }} - {{ .Title }}
+#### {{ .Id }}
+
+**{{ .Title }}**
 
 {{ .Objective }}
 
-**Control Family:** {{ $family }}
-
-{{ if .ThreatMappings -}}
-#### Mitigated Threats
-
-| Threat Catalog | Mapped Threats |
-| --- | --- |
-{{- range .ThreatMappings }}
-  {{- $referenceId := .ReferenceId }}
-  {{- range .Identifiers }}
-| {{ $referenceId }} | {{ . }} |
-  {{- end }}
-{{- end }}
-{{- end }}
-
-{{ if .GuidelineMappings -}}
-#### Associated Guidelines
-
-| Guideline | Mapped Controls |
-| --- | --- |
-{{- range .GuidelineMappings }}
-  {{- $referenceId := .ReferenceId }}
-  {{- range .Identifiers }}
-| {{ $referenceId }} | {{ . }} |
-  {{- end }}
-{{- end }}
-{{- end }}
+<div style="display: flex; width: 100%;">
+  <div style="flex: 1; padding-right: 10px;">
+    {{ if .ThreatMappings -}}
+    Mitigated Threats
+    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ddd; padding: 8px;">Threat Catalog</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Mapped Threat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{- range .ThreatMappings }}
+          {{- $referenceId := .ReferenceId }}
+          {{- range .Identifiers }}
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+        </tr>
+          {{- end }}
+        {{- end }}
+      </tbody>
+    </table>
+    {{- end }}
+  </div>
+  <div style="flex: 1; padding-left: 10px;">
+    {{ if .GuidelineMappings -}}
+    Associated Guidelines
+    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #ddd; padding: 8px;">Guideline</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Mapped Control</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{- range .GuidelineMappings }}
+          {{- $referenceId := .ReferenceId }}
+          {{- range .Identifiers }}
+        <tr>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+        </tr>
+          {{- end }}
+        {{- end }}
+      </tbody>
+    </table>
+    {{- end }}
+  </div>
+</div>
 {{- end }}
 {{- end }}
 

@@ -21,9 +21,6 @@ type cccMetadata struct {
 }
 
 var (
-	BuildDirectoryPath string
-	MetadataFilePath   string
-
 	// baseCmd represents the base command when called without any subcommands
 	UpdateMetadata = &cobra.Command{
 		Use:   "update-metadata",
@@ -42,13 +39,11 @@ var (
 				return
 			}
 
-			MetadataFilePath = filepath.Join(args[0], "metadata.yaml")
-
 			err := updateMetadata(args[0])
 			if err != nil {
 				fmt.Println(err)
 			} else {
-				fmt.Printf("Metadata has been updated successfully: %s\n", MetadataFilePath)
+				fmt.Printf("Metadata has been updated successfully: %s\n", args[0])
 			}
 		},
 	}
@@ -72,7 +67,6 @@ func updateMetadata(path string) (err error) {
 
 	// Fetch the list of commits from the repository
 	cleanedPath := strings.Replace(filepath.ToSlash(path), "../", "", 1)
-	log.Print("BuildDirectoryPath: ", path) // Currently just an empty string
 
 	opts := &github.CommitsListOptions{
 		Path: cleanedPath,
@@ -82,7 +76,7 @@ func updateMetadata(path string) (err error) {
 		log.Fatal("Error fetching commits: ", err)
 	}
 
-	metadata := getMetadataYaml()
+	metadata := getMetadataYaml(filepath.Join(path, "metadata.yaml"))
 
 	if len(metadata.ReleaseDetails) == 0 {
 		log.Fatal("Release details not provided: ", metadata)
@@ -99,7 +93,7 @@ func updateMetadata(path string) (err error) {
 		log.Fatal("Error marshaling YAML: ", err)
 	}
 
-	err = os.WriteFile(MetadataFilePath, metadataData, os.FileMode(0666))
+	err = os.WriteFile(filepath.Join(path, "metadata.yaml"), metadataData, os.FileMode(0666))
 	if err != nil {
 		log.Fatal("Error writing to the YAML file: ", err)
 	}
@@ -157,21 +151,4 @@ func parseCommits(commits []*github.RepositoryCommit) ([]string, []Contributors)
 		}
 	}
 	return changelog, contributors
-}
-
-func getMetadataYaml() cccMetadata {
-	// Read the YAML file
-	yamlFile, err := os.ReadFile(MetadataFilePath)
-	if err != nil {
-		log.Fatalf("Error reading YAML file: %v", err)
-	}
-
-	var data cccMetadata
-	// Unmarshal the YAML into the struct
-	err = yaml.Unmarshal(yamlFile, &data)
-	if err != nil {
-		log.Fatalf("Error unmarshaling YAML: %v", err)
-	}
-
-	return data
 }
