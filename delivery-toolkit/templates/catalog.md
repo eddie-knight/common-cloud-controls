@@ -1,25 +1,23 @@
 <!-- markdownlint-disable -->
-<img width="50%" src="https://raw.githubusercontent.com/finos/branding/882d52260eb9b85a4097db38b09a52ea9bb68734/project-logos/active-project-logos/Common%20Cloud%20Controls%20Logo/Horizontal/2023_FinosCCC_Horizontal_BLK.svg" alt="CCC Logo"/>
-
 # {{ .Metadata.Id }} v{{ (lastReleaseDetails .ReleaseDetails).Version }} ({{ .Metadata.Title }})
+
+<img height="250px" src="https://raw.githubusercontent.com/finos/branding/882d52260eb9b85a4097db38b09a52ea9bb68734/project-logos/active-project-logos/Common%20Cloud%20Controls%20Logo/Horizontal/2023_FinosCCC_Horizontal_BLK.svg" alt="CCC Logo"/>
 
 {{ .Metadata.Description }}
 
-## Notes from the Release Manager:
+## Release Notes
 
-> _{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Summary|safe }}_
+> _{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Summary }}_
 >
 > _- {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name }}, {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Company }} ([{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}](https://github.com/{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}))_
+> _{{ .Metadata.Id }} v{{ (lastReleaseDetails .ReleaseDetails).Version }} Release Manager_
 
-### Changes Since Last Release:
-
+## Changes Since Last Release
 {{ range (lastReleaseDetails .ReleaseDetails).ChangeLog }}
 - {{ . }}
 {{- end }}
 
 ## Capabilities
-
-The following capabilities are required to be present on a resource for it to be considered a {{ .Metadata.Title }} service. Threats outlined in this catalog are assesssed based on the presence of these capabilities.
 
 |Capability ID|Capability Title|Description|
 |----|----|----|
@@ -43,24 +41,36 @@ The following capabilities are required to be present on a resource for it to be
 
 <div style="display: flex; width: 100%;">
   <div style="flex: 1; padding-right: 10px;">
-  {{ if .Capabilities -}}
-  Relevant to these capabilities:
-  <ul>
-    {{ range .Capabilities }}
-      {{ range .Identifiers }}
-  <li>{{ . }}</li>
-      {{- end }}
+    {{ if .Capabilities -}}
+    Impacted Capability
+    <table>
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Capability</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{- range .Capabilities }}
+          {{- $referenceId := .ReferenceId }}
+          {{- range .Identifiers }}
+        <tr>
+          <td>{{ $referenceId }}</td>
+          <td>{{ . }}</td>
+        </tr>
+          {{- end }}
+        {{- end }}
+      </tbody>
+    </table>
     {{- end }}
-  </ul>
-  {{- end }}
   </div>
   <div style="flex: 1; padding-left: 10px;">
     {{ if .ExternalMappings -}}
-    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+    <table>
       <thead>
         <tr>
-          <th style="border: 1px solid #ddd; padding: 8px;">Relevant External Item</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Source</th>
+          <th>Source</th>
+          <th>Mapping</th>
         </tr>
       </thead>
       <tbody>
@@ -68,8 +78,8 @@ The following capabilities are required to be present on a resource for it to be
           {{- $referenceId := .ReferenceId }}
           {{- range .Identifiers }}
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
+          <td>{{ $referenceId }}</td>
+          <td>{{ . }}</td>
         </tr>
           {{- end }}
         {{- end }}
@@ -105,11 +115,11 @@ The following capabilities are required to be present on a resource for it to be
 <div style="display: flex; width: 100%;">
   <div style="flex: 1; padding-right: 10px;">
     {{ if .ThreatMappings -}}
-    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+    <table>
       <thead>
         <tr>
-          <th style="border: 1px solid #ddd; padding: 8px;">Threat Catalog</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Related Threat</th>
+          <th>Threat Catalog</th>
+          <th>Related Threat</th>
         </tr>
       </thead>
       <tbody>
@@ -117,8 +127,8 @@ The following capabilities are required to be present on a resource for it to be
           {{- $referenceId := .ReferenceId }}
           {{- range .Identifiers }}
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+          <td>{{ $referenceId }}</td>
+          <td>{{ . }}</td>
         </tr>
           {{- end }}
         {{- end }}
@@ -128,11 +138,11 @@ The following capabilities are required to be present on a resource for it to be
   </div>
   <div style="flex: 1; padding-left: 10px;">
     {{ if .GuidelineMappings -}}
-    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+    <table>
       <thead>
         <tr>
-          <th style="border: 1px solid #ddd; padding: 8px;">Guideline</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Related Guidance</th>
+          <th>Guideline</th>
+          <th>Related Guidance</th>
         </tr>
       </thead>
       <tbody>
@@ -140,8 +150,8 @@ The following capabilities are required to be present on a resource for it to be
           {{- $referenceId := .ReferenceId }}
           {{- range .Identifiers }}
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+          <td>{{ $referenceId }}</td>
+          <td>{{ . }}</td>
         </tr>
           {{- end }}
         {{- end }}
