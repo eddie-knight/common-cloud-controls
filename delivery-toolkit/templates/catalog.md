@@ -44,7 +44,7 @@ The following capabilities are required to be present on a resource for it to be
 <div style="display: flex; width: 100%;">
   <div style="flex: 1; padding-right: 10px;">
   {{ if .Capabilities -}}
-  <i>This threat is associated with the following capabilities:</i>
+  Relevant to these capabilities:
   <ul>
     {{ range .Capabilities }}
       {{ range .Identifiers }}
@@ -56,12 +56,11 @@ The following capabilities are required to be present on a resource for it to be
   </div>
   <div style="flex: 1; padding-left: 10px;">
     {{ if .ExternalMappings -}}
-    <i>The authors considered the following external elements noteworthy for this threat:</i>
     <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
       <thead>
         <tr>
+          <th style="border: 1px solid #ddd; padding: 8px;">Relevant External Item</th>
           <th style="border: 1px solid #ddd; padding: 8px;">Source</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Mapping</th>
         </tr>
       </thead>
       <tbody>
@@ -69,8 +68,8 @@ The following capabilities are required to be present on a resource for it to be
           {{- $referenceId := .ReferenceId }}
           {{- range .Identifiers }}
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
           <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
         </tr>
           {{- end }}
         {{- end }}

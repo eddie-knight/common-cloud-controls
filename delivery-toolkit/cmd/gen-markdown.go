@@ -150,14 +150,8 @@ code, pre {
 blockquote {
     margin: 0.5in 0;
     padding: 0.3in;
-    background-color: #f5f5f5;
     border-left: 5px solid #cccccc;
-    color: #666666;
     font-style: italic;
-}
-ul, ol {
-    margin: 0.5in 0;
-    padding-left: 1in;
 }
 @page {
     margin: 0.2in;
