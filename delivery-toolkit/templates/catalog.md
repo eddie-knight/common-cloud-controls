@@ -1,34 +1,30 @@
 <!-- markdownlint-disable -->
-# {{ .Metadata.Id }} v{{ (lastReleaseDetails .ReleaseDetails).Version }} ({{ .Metadata.Title }})
+<img width="50%" src="https://raw.githubusercontent.com/finos/branding/882d52260eb9b85a4097db38b09a52ea9bb68734/project-logos/active-project-logos/Common%20Cloud%20Controls%20Logo/Horizontal/2023_FinosCCC_Horizontal_BLK.svg" alt="CCC Logo"/>
 
-<img height="250px" src="https://raw.githubusercontent.com/finos/branding/882d52260eb9b85a4097db38b09a52ea9bb68734/project-logos/active-project-logos/Common%20Cloud%20Controls%20Logo/Horizontal/2023_FinosCCC_Horizontal_BLK.svg" alt="CCC Logo"/>
+# {{ .Metadata.Id }} v{{ (lastReleaseDetails .ReleaseDetails).Version }} ({{ .Metadata.Title }})
 
 {{ .Metadata.Description }}
 
-## Release Notes
+## Notes from the Release Manager:
 
-> {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Summary }}
+> _{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Summary|safe }}_
+>
+> _- {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name }}, {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Company }} ([{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}](https://github.com/{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}))_
 
-Release Manager - **{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name }}, {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Company }}** ([{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}](https://github.com/{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}))
+### Changes Since Last Release:
 
-## Changes Since Last Release
 {{ range (lastReleaseDetails .ReleaseDetails).ChangeLog }}
 - {{ . }}
 {{- end }}
 
 ## Capabilities
 
-|Capability ID|Capability Title|
-|----|----|
+The following capabilities are required to be present on a resource for it to be considered a {{ .Metadata.Title }} service. Threats outlined in this catalog are assesssed based on the presence of these capabilities.
+
+|Capability ID|Capability Title|Description|
+|----|----|----|
 {{- range .Capabilities }}
-|{{ .Id }}|{{ .Title }}|
-{{- end }}
-
----
-{{ range .Capabilities }}
-### {{ .Id }} - {{ .Title }}
-
-{{ .Description }}
+|{{ .Id }}|{{ .Title }}|{{.Description|safe}}|
 {{- end }}
 
 ## Threats
@@ -47,32 +43,18 @@ Release Manager - **{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name 
 
 <div style="display: flex; width: 100%;">
   <div style="flex: 1; padding-right: 10px;">
-    {{ if .Capabilities -}}
-    Impacted Capability
-    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
-      <thead>
-        <tr>
-          <th style="border: 1px solid #ddd; padding: 8px;">Source</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Capability</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{- range .Capabilities }}
-          {{- $referenceId := .ReferenceId }}
-          {{- range .Identifiers }}
-        <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
-        </tr>
-          {{- end }}
-        {{- end }}
-      </tbody>
-    </table>
+  {{ if .Capabilities -}}
+  <i>This threat is associated with the following capabilities:</i>
+    {{ range .Capabilities }}
+      {{ range .Identifiers }}
+  - {{ . }}
+      {{- end }}
     {{- end }}
+  {{- end }}
   </div>
   <div style="flex: 1; padding-left: 10px;">
     {{ if .ExternalMappings -}}
-    Related Mapping
+    <i>The authors considered the following external elements noteworthy for this threat:</i>
     <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
       <thead>
         <tr>
@@ -122,12 +104,11 @@ Release Manager - **{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name 
 <div style="display: flex; width: 100%;">
   <div style="flex: 1; padding-right: 10px;">
     {{ if .ThreatMappings -}}
-    Mitigated Threats
     <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
       <thead>
         <tr>
           <th style="border: 1px solid #ddd; padding: 8px;">Threat Catalog</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Mapped Threat</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Related Threat</th>
         </tr>
       </thead>
       <tbody>
@@ -146,12 +127,11 @@ Release Manager - **{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name 
   </div>
   <div style="flex: 1; padding-left: 10px;">
     {{ if .GuidelineMappings -}}
-    Associated Guidelines
     <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
       <thead>
         <tr>
           <th style="border: 1px solid #ddd; padding: 8px;">Guideline</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Mapped Control</th>
+          <th style="border: 1px solid #ddd; padding: 8px;">Related Guidance</th>
         </tr>
       </thead>
       <tbody>

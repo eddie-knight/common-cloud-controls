@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -33,6 +35,24 @@ func runGenerateMarkdown(cmd *cobra.Command, args []string) {
 	} else {
 		fmt.Printf("File generated successfully: %s\n", outputPath)
 	}
+}
+
+var (
+	htmlRegex  = regexp.MustCompile(`<[^>]*>`)
+	spaceRegex = regexp.MustCompile(`\s+`)
+)
+
+func safe(s string) string {
+	// 1. Remove HTML tags
+	s = htmlRegex.ReplaceAllString(s, "")
+	// 2. Replace newlines with a space
+	s = strings.ReplaceAll(s, "\n", " ")
+	s = strings.ReplaceAll(s, "\r", "") // Also remove carriage returns
+	// 3. Remove pipe characters that would break markdown tables
+	s = strings.ReplaceAll(s, "|", "")
+	// 4. Collapse multiple spaces into a single space and trim
+	s = spaceRegex.ReplaceAllString(s, " ")
+	return strings.TrimSpace(s)
 }
 
 func generateOmnibusMdFile() (string, error) {
@@ -71,6 +91,7 @@ func generateOmnibusMdFile() (string, error) {
 	tmpl, err := template.New("catalog").Funcs(template.FuncMap{
 		"insertLogoWall":     func() template.HTML { return template.HTML(svgContent) },
 		"lastReleaseDetails": lastReleaseDetails,
+		"safe":               safe,
 	}).Parse(string(contentWithPageBreaks))
 	if err != nil {
 		return "", fmt.Errorf("error parsing template: %w", err)
