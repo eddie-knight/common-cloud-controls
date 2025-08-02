@@ -45,11 +45,13 @@ The following capabilities are required to be present on a resource for it to be
   <div style="flex: 1; padding-right: 10px;">
   {{ if .Capabilities -}}
   <i>This threat is associated with the following capabilities:</i>
+  <ul>
     {{ range .Capabilities }}
       {{ range .Identifiers }}
-  - {{ . }}
+  <li>{{ . }}</li>
       {{- end }}
     {{- end }}
+  </ul>
   {{- end }}
   </div>
   <div style="flex: 1; padding-left: 10px;">
