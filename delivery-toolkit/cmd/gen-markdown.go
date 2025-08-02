@@ -162,6 +162,18 @@ th, td {
 	border: 1px solid #ddd;
 	padding: 8px;
 }
+.flex-container {
+    display: flex;
+    width: 100%;
+}
+.flex-item-left {
+    flex: 1;
+    padding-right: 10px;
+}
+.flex-item-right {
+    flex: 1;
+    padding-left: 10px;
+}
 @page {
     margin: 0.2in;
 }

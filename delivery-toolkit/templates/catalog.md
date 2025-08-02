@@ -41,8 +41,8 @@ The following capabilities are required to be present on a resource for it to be
 
 {{ .Description }}
 
-<div style="display: flex; width: 100%;">
-  <div style="flex: 1; padding-right: 10px;">
+<div class="flex-container">
+  <div class="flex-item-left">
   {{ if .Capabilities -}}
   Relevant to these capabilities:
   <ul>
@@ -54,13 +54,13 @@ The following capabilities are required to be present on a resource for it to be
   </ul>
   {{- end }}
   </div>
-  <div style="flex: 1; padding-left: 10px;">
+  <div class="flex-item-right">
     {{ if .ExternalMappings -}}
-    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+    <table cellpadding="5">
       <thead>
         <tr>
-          <th style="border: 1px solid #ddd; padding: 8px;">Relevant External Item</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Source</th>
+          <th>Relevant External Item</th>
+          <th>Source</th>
         </tr>
       </thead>
       <tbody>
@@ -68,8 +68,8 @@ The following capabilities are required to be present on a resource for it to be
           {{- $referenceId := .ReferenceId }}
           {{- range .Identifiers }}
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
+          <td>{{ . }}</td>
+          <td>{{ $referenceId }}</td>
         </tr>
           {{- end }}
         {{- end }}
@@ -102,14 +102,14 @@ The following capabilities are required to be present on a resource for it to be
 
 {{ .Objective }}
 
-<div style="display: flex; width: 100%;">
-  <div style="flex: 1; padding-right: 10px;">
+<div class="flex-container">
+  <div class="flex-item-left">
     {{ if .ThreatMappings -}}
-    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+    <table cellpadding="5">
       <thead>
         <tr>
-          <th style="border: 1px solid #ddd; padding: 8px;">Threat Catalog</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Related Threat</th>
+          <th>Threat Catalog</th>
+          <th>Related Threat</th>
         </tr>
       </thead>
       <tbody>
@@ -117,8 +117,8 @@ The following capabilities are required to be present on a resource for it to be
           {{- $referenceId := .ReferenceId }}
           {{- range .Identifiers }}
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+          <td>{{ $referenceId }}</td>
+          <td>{{ . }}</td>
         </tr>
           {{- end }}
         {{- end }}
@@ -126,13 +126,13 @@ The following capabilities are required to be present on a resource for it to be
     </table>
     {{- end }}
   </div>
-  <div style="flex: 1; padding-left: 10px;">
+  <div class="flex-item-right">
     {{ if .GuidelineMappings -}}
-    <table cellpadding="5" style="width:100%; border-collapse: collapse; border-style: hidden;">
+    <table cellpadding="5">
       <thead>
         <tr>
-          <th style="border: 1px solid #ddd; padding: 8px;">Guideline</th>
-          <th style="border: 1px solid #ddd; padding: 8px;">Related Guidance</th>
+          <th>Guideline</th>
+          <th>Related Guidance</th>
         </tr>
       </thead>
       <tbody>
@@ -140,8 +140,8 @@ The following capabilities are required to be present on a resource for it to be
           {{- $referenceId := .ReferenceId }}
           {{- range .Identifiers }}
         <tr>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ $referenceId }}</td>
-          <td style="border: 1px solid #ddd; padding: 8px;">{{ . }}</td>
+          <td>{{ $referenceId }}</td>
+          <td>{{ . }}</td>
         </tr>
           {{- end }}
         {{- end }}
