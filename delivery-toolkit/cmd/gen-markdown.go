@@ -153,6 +153,15 @@ blockquote {
     border-left: 5px solid #cccccc;
     font-style: italic;
 }
+table {
+	width: 100%;
+	border-collapse: collapse;
+	border-style: hidden;
+}
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+}
 @page {
     margin: 0.2in;
 }

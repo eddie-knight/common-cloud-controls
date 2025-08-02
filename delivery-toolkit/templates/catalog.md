@@ -11,7 +11,7 @@
 >
 > _- {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Name }}, {{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.Company }} ([{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}](https://github.com/{{ (lastReleaseDetails .ReleaseDetails).ReleaseManager.GithubId }}))_
 
-### Changes Since Last Release:
+### Changes Since Last Release
 
 {{ range (lastReleaseDetails .ReleaseDetails).ChangeLog }}
 - {{ . }}
