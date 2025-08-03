@@ -44,7 +44,7 @@ The following capabilities are required to be present on a resource for it to be
 <div class="flex-container">
   <div class="flex-item-left">
   {{ if .Capabilities -}}
-  Relevant to these capabilities:
+  Applies to these capabilities:
   <ul>
     {{ range .Capabilities }}
       {{ range .Identifiers }}
@@ -105,6 +105,12 @@ The following capabilities are required to be present on a resource for it to be
 
 **Objective:** {{ .Objective }}
 
+| Assessment Requirement | Applicability |
+| --- | --- |
+{{- range .AssessmentRequirements }}
+| {{ .Text | safe }} | {{- range .Applicability }}{{ . }}<br />{{ end }} |
+{{- end }}
+
 <div class="flex-container">
   <div class="flex-item-left">
     {{ if .ThreatMappings -}}
@@ -153,13 +159,6 @@ The following capabilities are required to be present on a resource for it to be
     {{- end }}
   </div>
 </div>
-
-| Assessment Requirement | Applicability |
-| --- | --- |
-{{- range .AssessmentRequirements }}
-| {{ .Text | safe }} | {{- range .Applicability }}{{ . }}<br />{{ end }} |
-{{- end }}
-
 {{- end }}
 {{- end }}
 
