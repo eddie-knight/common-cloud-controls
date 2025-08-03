@@ -39,7 +39,7 @@ The following capabilities are required to be present on a resource for it to be
 {{ range .Threats }}
 ### {{ .Id }} - {{ .Title }}
 
-{{ .Description }}
+**Description:** {{ .Description }}
 
 <div class="flex-container">
   <div class="flex-item-left">
@@ -100,7 +100,7 @@ The following capabilities are required to be present on a resource for it to be
 
 **{{ .Title }}**
 
-{{ .Objective }}
+**Objective:** {{ .Objective }}
 
 <div class="flex-container">
   <div class="flex-item-left">
@@ -150,6 +150,26 @@ The following capabilities are required to be present on a resource for it to be
     {{- end }}
   </div>
 </div>
+
+{{ range .AssessmentRequirements }}
+
+#### {{ .Id }}
+
+<div class="flex-container">
+  <div class="flex-item-left">
+    <b>Applicability:</b>
+    <ul>
+    {{- range .Applicability }}
+    <li>{{ . }}</li>
+    {{- end }}
+    </ul>
+  </div>
+  <div class="flex-item-right">
+    <b>Requirement:</b> {{ .Text | safe }}
+  </div>
+</div>
+
+{{- end }}
 {{- end }}
 {{- end }}
 
