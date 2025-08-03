@@ -157,15 +157,15 @@ The following capabilities are required to be present on a resource for it to be
 
 <div class="flex-container">
   <div class="flex-item-left">
+    <b>Requirement:</b> {{ .Text | safe }}
+  </div>
+  <div class="flex-item-right">
     <b>Applicability:</b>
     <ul>
     {{- range .Applicability }}
     <li>{{ . }}</li>
     {{- end }}
     </ul>
-  </div>
-  <div class="flex-item-right">
-    <b>Requirement:</b> {{ .Text | safe }}
   </div>
 </div>
 
@@ -177,10 +177,12 @@ The following capabilities are required to be present on a resource for it to be
 
 We would like to acknowledge the following organizations for their valuable contributions to this project:
 
-|  | <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" height="80" alt="FINOS Logo"> |  |
-|:--:|:--:|:--:|
-| <img src="https://www.finos.org/hs-fs/hubfs/2-Jan-18-2025-03-02-33-3610-AM.png?width=1039&height=494&name=2-Jan-18-2025-03-02-33-3610-AM.png" height="80" alt="Citigroup Logo"> | <img src="https://www.finos.org/hs-fs/hubfs/69-1.png?width=2078&height=988&name=69-1.png" height="80" alt="Scott Logic Logo"> | <img src="https://www.finos.org/hs-fs/hubfs/37.png?width=2078&height=988&name=37.png" height="80" alt="Sonatype Logo"> |
-| <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" height="80" alt="Logo 7"> | <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" height="80" alt="Logo 8"> | <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" height="80" alt="Logo 9"> |
+<div class="flex-container">
+  <img src="https://www.finos.org/hs-fs/hubfs/2-Jan-18-2025-03-02-33-3610-AM.png" alt="Citigroup Logo">
+  <img src="https://www.finos.org/hs-fs/hubfs/69-1.png" alt="Scott Logic Logo">
+  <img src="https://www.finos.org/hs-fs/hubfs/37.png" alt="Sonatype Logo">
+  <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 7"> | <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 8"> | <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 9">
+</div>
 
 <!-- Add or remove rows as needed -->
 
