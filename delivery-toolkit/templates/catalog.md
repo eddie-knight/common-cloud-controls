@@ -94,6 +94,9 @@ The following capabilities are required to be present on a resource for it to be
 
 {{- range .ControlFamilies }}
 ### {{ .Title }}
+
+{{ .Description }}
+
 {{- range .Controls }}
 
 #### {{ .Id }}
@@ -151,25 +154,12 @@ The following capabilities are required to be present on a resource for it to be
   </div>
 </div>
 
-{{ range .AssessmentRequirements }}
-
-#### {{ .Id }}
-
-<div class="flex-container">
-  <div class="flex-item-left">
-    <b>Requirement:</b> {{ .Text | safe }}
-  </div>
-  <div class="flex-item-right">
-    <b>Applicability:</b>
-    <ul>
-    {{- range .Applicability }}
-    <li>{{ . }}</li>
-    {{- end }}
-    </ul>
-  </div>
-</div>
-
+| Assessment Requirement | Applicability |
+| --- | --- |
+{{- range .AssessmentRequirements }}
+| {{ .Text | safe }} | {{- range .Applicability }}{{ . }}<br />{{ end }} |
 {{- end }}
+
 {{- end }}
 {{- end }}
 

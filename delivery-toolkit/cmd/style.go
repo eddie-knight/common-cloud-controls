@@ -22,15 +22,16 @@ body {
     line-height: 1.5;
     color: #333333;
 }
-h1, h2, h3 {
+h1, h2, h3, h4{
     color: #1A5276;
     margin-top: 0.5in;
     margin-bottom: 0.2in;
     font-weight: bold;
 }
-h1 { font-size: 18pt; }
-h2 { font-size: 16pt; }
-h3 { font-size: 14pt; }
+h1 { font-size: 22t; }
+h2 { font-size: 18pt; }
+h3 { font-size: 16pt; }
+h4 { font-size: 14pt; }
 p { 
 	font-size: 11pt;
 	margin-bottom: 0.15in;
