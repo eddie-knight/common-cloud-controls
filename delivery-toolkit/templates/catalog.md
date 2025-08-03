@@ -181,7 +181,9 @@ We would like to acknowledge the following organizations for their valuable cont
   <img src="https://www.finos.org/hs-fs/hubfs/2-Jan-18-2025-03-02-33-3610-AM.png" alt="Citigroup Logo">
   <img src="https://www.finos.org/hs-fs/hubfs/69-1.png" alt="Scott Logic Logo">
   <img src="https://www.finos.org/hs-fs/hubfs/37.png" alt="Sonatype Logo">
-  <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 7"> | <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 8"> | <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 9">
+  <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 7">
+  <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 8">
+  <img src="https://www.finos.org/hubfs/FINOS/finos-logo/FINOS_Icon_Wordmark_Name_horz_White.svg" alt="Logo 9">
 </div>
 
 <!-- Add or remove rows as needed -->

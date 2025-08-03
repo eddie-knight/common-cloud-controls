@@ -36,7 +36,7 @@ p {
 	margin-bottom: 0.15in;
 }
 img {
-	max-height: 0.5in;
+	max-height: 100px
 }
 
 code, pre {
@@ -66,6 +66,8 @@ th, td {
 .flex-container {
     display: flex;
     width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 .flex-item-left {
     flex: 1;
