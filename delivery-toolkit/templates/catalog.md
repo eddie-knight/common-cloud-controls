@@ -175,7 +175,7 @@ The following capabilities are required to be present on a resource for it to be
 
 ## Contributing Organizations
 
-We would like to acknowledge the following organizations for their valuable contributions to this project:
+We would like to acknowledge the following organizations for their contributions to this document:
 
 <div class="flex-container">
   <img src="https://www.finos.org/hs-fs/hubfs/2-Jan-18-2025-03-02-33-3610-AM.png" alt="Citigroup Logo">
