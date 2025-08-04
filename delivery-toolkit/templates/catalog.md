@@ -90,10 +90,8 @@ The following capabilities are required to be present on a resource for it to be
 {{- end }}
 {{- end }}
 
----
-
 {{- range .ControlFamilies }}
-### {{ .Title }}
+### {{ .Title }} Control Family
 
 {{ .Description }}
 
