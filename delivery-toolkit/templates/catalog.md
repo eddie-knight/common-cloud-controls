@@ -37,7 +37,9 @@ The following capabilities are required to be present on a resource for it to be
 
 ---
 {{ range .Threats }}
-### {{ .Id }} - {{ .Title }}
+### {{ .Id }}
+
+**{{ .Title }}**
 
 **Description:** {{ .Description }}
 
@@ -91,13 +93,10 @@ The following capabilities are required to be present on a resource for it to be
 {{- end }}
 
 {{- range .ControlFamilies }}
-### {{ .Title }} Control Family
-
-{{ .Description }}
 
 {{- range .Controls }}
 
-#### {{ .Id }}
+### {{ .Id }}
 
 **{{ .Title }}**
 
