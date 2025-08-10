@@ -78,10 +78,10 @@ func loadContent(directory string) (*layer2.Catalog, error) {
 	}
 
 	if len(missing) >= 3 {
-		return nil, fmt.Errorf("skipping: %s", directory)
+		return nil, fmt.Errorf("no relevant files found: %s", directory)
 	}
 	if len(missing) > 0 {
-		return nil, fmt.Errorf("missing %v", missing)
+		return nil, fmt.Errorf("missing %v in %s", missing, directory)
 	}
 
 	var data layer2.Catalog
@@ -92,6 +92,13 @@ func loadContent(directory string) (*layer2.Catalog, error) {
 	})
 	return &data, err
 }
+
+// I'm not sure about this.... I want to get a standard release of the common catalog. Then we can reference the release YAML to ingest it.
+// should we mov it to the services dir? or keep it here? maybe that's irrelevant.
+// do we have an existing mechanism for ingesting compiled catalogs from the release path? I think rob had something in the website directory.
+// we need to make sure each catalog we release iincludes a mapping to the appropriate release of the common entries catalog.
+// the common entries catalog also needss a better NAME.
+// Common Cloud Controls: Common  DUMB AF
 
 func setGlobalCommonCatalog() error {
 	if len(globalCommonCatalog.ControlFamilies) == 0 {
