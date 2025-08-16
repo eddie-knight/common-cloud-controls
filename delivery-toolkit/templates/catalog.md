@@ -19,7 +19,7 @@
 
 ## Capabilities
 
-The following capabilities are required to be present on a resource for it to be considered a {{ .Metadata.Title }} service. Threats outlined in this catalog are assesssed based on the presence of these capabilities.
+The following capabilities are required to be present on a resource for it to be considered a {{ .Metadata.Title }} service. Threats outlined later in this catalog are assesssed based on the presence of these capabilities.
 {{ range .Capabilities }}
 - **{{ .Id }}: {{ .Title }}**
   
@@ -27,6 +27,10 @@ The following capabilities are required to be present on a resource for it to be
 {{ end }}
 
 ## Threats
+
+The following threats have been identified based upon {{ .Metadata.Title }} service capabilities. Controls outlined later in this catalog are designed to mitigate these threats. If you are aware of threats to {{ .Metadata.Title }} services that are not captured here, please refer to the Common Cloud Controls contributing guide for information about how you can help improve this catalog.
+
+Below is a summary table of the identified threats, which is immediately followed by an elucidation of each threat and relevant mappings.
 
 |Threat ID|Threat Title|
 |----|----|
@@ -82,6 +86,10 @@ The following capabilities are required to be present on a resource for it to be
 {{ end }}
 
 ## Controls
+
+The following controls have been designed to mitigate the aforementioned threats that have been identified for {{ .Metadata.Id }}. Each control includes one or more Assessment Requirements that should always pass for a service to be considered compliant with this control catalog. If your experience can help improve these controls, please refer to the Common Cloud Controls contributing guide for information about how you can help improve this catalog.
+
+Below is a summary table of the controls, which is immediately followed by an elucidation of each control and relevant mappings.
 
 |Control ID|Control Title|
 |----|----|
