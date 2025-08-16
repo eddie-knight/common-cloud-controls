@@ -20,10 +20,11 @@
 ## Capabilities
 
 The following capabilities are required to be present on a resource for it to be considered a {{ .Metadata.Title }} service. Threats outlined in this catalog are assesssed based on the presence of these capabilities.
-
-{{- range .Capabilities }}
-- **{{ .Title }} ({{ .Id }})**: {{.Description|safe}}
-{{- end }}
+{{ range .Capabilities }}
+- **{{ .Id }}: {{ .Title }}**
+  
+  {{.Description|safe}}
+{{ end }}
 
 ## Threats
 
