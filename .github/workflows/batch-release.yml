@@ -202,6 +202,79 @@ jobs:
             echo "$out"
           }
 
+          # Release every MappingDocument under a catalog's mappings/ directory. Unlike
+          # the single-file asset types, a catalog has N standalone mapping documents
+          # (one per target framework), each its own grc.store repository. Same per-file
+          # pipeline as release_asset (compile once, then validate + publish + release
+          # each), looped. Sets R_COUNT to the number released; same R_* contract.
+          #   0 = released (or built, on a dry run)   2 = no mapping documents
+          #   1 = real failure
+          release_mappings() {
+            local build_target="$1"
+            local out files file gemara_version spec_dir tag prerelease=""
+            R_REASON=""; R_AUTHOR=""; R_ARTIFACT=""; R_COUNT=0
+
+            if ! out="$(cd delivery-toolkit && go run . compile \
+                --build-target "$build_target" \
+                --type mappings \
+                --version "$VERSION" \
+                --catalogs-dir ../catalogs \
+                --output-dir ../artifacts 2>&1)"; then
+              echo "$out"; R_REASON="Compile failed — $(friendly_compile "$out")"; return 1
+            fi
+            echo "$out"
+
+            files="$(find "artifacts/${build_target}/mappings" -name '*.yaml' 2>/dev/null | sort)"
+            if [ -z "$files" ]; then
+              R_REASON="no mapping documents"; return 2
+            fi
+
+            case "$VERSION" in *rc*) prerelease="--prerelease" ;; esac
+            tag="${build_target}/${VERSION}"
+
+            while IFS= read -r file; do
+              [ -z "$file" ] && continue
+              gemara_version="$(grep -E '^[[:space:]]*gemara-version:' "$file" | head -1 | awk '{print $2}')"
+              R_AUTHOR="$(awk '/^    author:/{a=1} a && /^        id:/{print tolower($2); exit}' "$file")"
+              R_ARTIFACT="$(awk '/^metadata:/{m=1} m && /^    id:/{print tolower($2); exit}' "$file")"
+              echo "Mapping: ${file} (gemara ${gemara_version}, ${R_AUTHOR}/${R_ARTIFACT})"
+
+              spec_dir="/tmp/gemara-spec-${gemara_version}"
+              if [ ! -d "$spec_dir" ]; then
+                if ! out="$(git clone --depth 1 --branch "$gemara_version" \
+                    https://github.com/gemaraproj/gemara "$spec_dir" 2>&1)"; then
+                  echo "$out"; R_REASON="could not fetch Gemara spec ${gemara_version}"; return 1
+                fi
+              fi
+              if ! out="$(grcli validate -f "$file" --spec "$spec_dir" 2>&1)"; then
+                echo "$out"; R_REASON="Schema validation failed (${file##*/}) — $(friendly_validate "$out")"; return 1
+              fi
+              echo "$out"
+
+              if [ "$DRY_RUN" = "true" ]; then
+                if ! out="$(grcli publish "$file" --dry-run --output artifacts/oci 2>&1)"; then
+                  echo "$out"; R_REASON="Dry-run bundle build failed (${file##*/}) — $(printf '%s' "$out" | tail -2 | sanitize)"; return 1
+                fi
+                echo "$out"
+              else
+                if ! out="$(grcli publish "$file" 2>&1)"; then
+                  echo "$out"; R_REASON="Publish to grc.store failed (${file##*/}) — $(printf '%s' "$out" | tail -2 | sanitize)"; return 1
+                fi
+                echo "$out"
+                if ! out="$( { gh release create "$tag" "$file" \
+                      --title "${build_target} ${VERSION}" \
+                      --notes "Release of ${build_target} typed catalogs (${VERSION}), published to grc.store." \
+                      $prerelease \
+                    || gh release upload "$tag" "$file" --clobber; } 2>&1)"; then
+                  echo "$out"; R_REASON="GitHub release failed (${file##*/}) — $(printf '%s' "$out" | tail -2 | sanitize)"; return 1
+                fi
+                echo "$out"
+              fi
+              R_COUNT=$((R_COUNT + 1))
+            done <<< "$files"
+            return 0
+          }
+
           released=()
           skipped_nofile=()
           skipped_imports_only=()
@@ -255,6 +328,37 @@ jobs:
               esac
               rows+=("| \`catalogs/${build_target}/${asset_type}.yaml\` | ${result} |")
             done
+
+            # Threat-to-framework mappings: a directory of standalone MappingDocuments.
+            if [ -d "${dir}/mappings" ]; then
+              echo "::group::Release ${build_target} mappings"
+              rc=0
+              release_mappings "$build_target" || rc=$?
+              echo "::endgroup::"
+
+              case "$rc" in
+                0)
+                  released+=("${build_target} mappings (${R_COUNT})")
+                  if [ "$DRY_RUN" = "true" ]; then
+                    result="Built ${R_COUNT} mapping doc(s) (dry run, not published)"
+                  else
+                    gh_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${build_target}/${VERSION}"
+                    grc_url="https://grc.store/${R_AUTHOR}"
+                    result="Released ${R_COUNT} mapping doc(s) — [GitHub release](${gh_url}) · [grc.store](${grc_url})"
+                  fi
+                  rows+=("| \`catalogs/${build_target}/mappings/\` | ${result} |")
+                  ;;
+                2)
+                  # Directory present but compile produced nothing — treat as no source.
+                  skipped_nofile+=("${build_target} mappings")
+                  ;;
+                *)
+                  unreleased+=("${build_target} mappings")
+                  echo "::warning::${build_target} mappings: ${R_REASON:-unknown failure}"
+                  rows+=("| \`catalogs/${build_target}/mappings/\` | Failed: ${R_REASON:-unknown failure — see the log group above} |")
+                  ;;
+              esac
+            fi
           done
 
           {

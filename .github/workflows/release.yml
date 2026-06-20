@@ -45,6 +45,7 @@ on:
           - capabilities
           - threats
           - controls
+          - mappings
       version:
         description: "Release version (e.g. v2026.04 or v2026.04-rc1) — stamped into the artifact"
         required: true
@@ -75,12 +76,23 @@ jobs:
       - name: Verify source file exists
         id: verify
         run: |
-          src="catalogs/${BUILD_TARGET}/${ASSET_TYPE}.yaml"
-          if [ ! -f "$src" ]; then
-            echo "::error::No source file at ${src} — check the build target and asset type."
-            exit 1
+          # Mappings are a directory of standalone MappingDocuments; every other
+          # asset type is a single source file.
+          if [ "$ASSET_TYPE" = "mappings" ]; then
+            dir="catalogs/${BUILD_TARGET}/mappings"
+            if ! ls "${dir}"/*.yaml >/dev/null 2>&1; then
+              echo "::error::No mapping documents under ${dir}/ — check the build target."
+              exit 1
+            fi
+            echo "Source: ${dir}/*.yaml"
+          else
+            src="catalogs/${BUILD_TARGET}/${ASSET_TYPE}.yaml"
+            if [ ! -f "$src" ]; then
+              echo "::error::No source file at ${src} — check the build target and asset type."
+              exit 1
+            fi
+            echo "Source: ${src}"
           fi
-          echo "Source: ${src}"
 
       - uses: actions/setup-go@v5
         with:
@@ -99,26 +111,35 @@ jobs:
             --catalogs-dir ../catalogs \
             --output-dir ../artifacts 2>&1 | tee /tmp/compile.log
 
-      - name: Locate compiled artifact
+      - name: Locate compiled artifact(s)
         id: artifact
         run: |
-          file="$(find "artifacts/${BUILD_TARGET}" -name "${ASSET_TYPE}.yaml" | head -1)"
-          if [ -z "$file" ]; then
-            echo "::error::compile produced no ${ASSET_TYPE}.yaml under artifacts/${BUILD_TARGET}"
+          # Build the list of compiled artifacts the downstream steps iterate.
+          # Single-file asset types yield one path; mappings yield one per framework.
+          if [ "$ASSET_TYPE" = "mappings" ]; then
+            find "artifacts/${BUILD_TARGET}/mappings" -name '*.yaml' | sort > /tmp/artifacts.list
+          else
+            find "artifacts/${BUILD_TARGET}" -name "${ASSET_TYPE}.yaml" | head -1 > /tmp/artifacts.list
+          fi
+          if [ ! -s /tmp/artifacts.list ]; then
+            echo "::error::compile produced no artifact(s) for ${ASSET_TYPE} under artifacts/${BUILD_TARGET}"
             exit 1
           fi
-          gemara_version="$(grep -E '^[[:space:]]*gemara-version:' "$file" | head -1 | awk '{print $2}')"
+          first="$(head -1 /tmp/artifacts.list)"
+          count="$(grep -c . /tmp/artifacts.list)"
+          gemara_version="$(grep -E '^[[:space:]]*gemara-version:' "$first" | head -1 | awk '{print $2}')"
           # author.id (8-space indent, under author:) + metadata.id (4-space indent),
-          # lowercased, drive the grc.store link: <author>/<id>/versions/<ver>.
-          author="$(awk '/^    author:/{a=1} a && /^        id:/{print tolower($2); exit}' "$file")"
-          artifact_id="$(awk '/^metadata:/{m=1} m && /^    id:/{print tolower($2); exit}' "$file")"
+          # lowercased, drive the grc.store link: <author>/<id>/versions/<ver>. All
+          # artifacts in a run share one author; the id is per-document for mappings.
+          author="$(awk '/^    author:/{a=1} a && /^        id:/{print tolower($2); exit}' "$first")"
+          artifact_id="$(awk '/^metadata:/{m=1} m && /^    id:/{print tolower($2); exit}' "$first")"
           {
-            echo "file=${file}"
             echo "gemara_version=${gemara_version}"
             echo "author=${author}"
             echo "artifact_id=${artifact_id}"
+            echo "count=${count}"
           } >> "$GITHUB_OUTPUT"
-          echo "Compiled: ${file} (gemara ${gemara_version}, ${author}/${artifact_id})"
+          echo "Compiled ${count} artifact(s) (gemara ${gemara_version}, author ${author}); first: ${first}"
 
       # grcli, pulled from its OCI distribution exactly as documented.
       - uses: oras-project/setup-oras@v1
@@ -139,46 +160,59 @@ jobs:
       - name: Validate against the Gemara spec
         id: validate
         env:
-          ARTIFACT: ${{ steps.artifact.outputs.file }}
           GEMARA_VERSION: ${{ steps.artifact.outputs.gemara_version }}
         run: |
-          { git clone --depth 1 --branch "$GEMARA_VERSION" \
-              https://github.com/gemaraproj/gemara /tmp/gemara-spec \
-            && grcli validate -f "$ARTIFACT" --spec /tmp/gemara-spec; } 2>&1 | tee /tmp/validate.log
+          git clone --depth 1 --branch "$GEMARA_VERSION" \
+            https://github.com/gemaraproj/gemara /tmp/gemara-spec 2>&1 | tee /tmp/validate.log
+          # Validate every compiled artifact; any failure fails the gate.
+          rc=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            echo "::group::validate ${f}"
+            grcli validate -f "$f" --spec /tmp/gemara-spec 2>&1 | tee -a /tmp/validate.log || rc=1
+            echo "::endgroup::"
+          done < /tmp/artifacts.list
+          exit $rc
 
-      # NEW publishing step: push the typed catalog to grc.store.
+      # NEW publishing step: push the typed catalog(s) to grc.store. Each compiled
+      # artifact is its own grc.store repository (<author>/<metadata.id>).
       - name: Publish to grc.store
         id: publish
-        env:
-          ARTIFACT: ${{ steps.artifact.outputs.file }}
         run: |
-          if [ "$DRY_RUN" = "true" ]; then
-            grcli publish "$ARTIFACT" --dry-run --output artifacts/oci 2>&1 | tee /tmp/publish.log
-          else
-            grcli publish "$ARTIFACT" 2>&1 | tee /tmp/publish.log
-          fi
+          rc=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            echo "::group::publish ${f}"
+            if [ "$DRY_RUN" = "true" ]; then
+              grcli publish "$f" --dry-run --output artifacts/oci 2>&1 | tee -a /tmp/publish.log || rc=1
+            else
+              grcli publish "$f" 2>&1 | tee -a /tmp/publish.log || rc=1
+            fi
+            echo "::endgroup::"
+          done < /tmp/artifacts.list
+          exit $rc
 
       # Augmented old flow: cut a GitHub release carrying the single typed catalog.
       # (Redundant with grc.store — kept per "augment"; safe to drop later.)
       - name: Cut GitHub release
         id: release
         if: ${{ inputs.dry_run == false }}
-        env:
-          ARTIFACT: ${{ steps.artifact.outputs.file }}
         run: |
           prerelease=""
           case "$VERSION" in *rc*) prerelease="--prerelease" ;; esac
           # Per-target release tagged <family>/<service>/<version>, identical to
           # batch-release.yml so the single and batch paths converge on the SAME
           # release. Within a target the asset basenames (capabilities/threats/
-          # controls.yaml) are unique, so the artifact uploads under its plain name.
-          # The first asset for a target creates the release; later ones upload into it.
+          # controls.yaml, or mappings/threats-<framework>.yaml) are unique, so each
+          # artifact uploads under its plain name. The first asset for a target creates
+          # the release; later ones upload into it.
           tag="${BUILD_TARGET}/${VERSION}"
-          { gh release create "$tag" "$ARTIFACT" \
+          mapfile -t files < /tmp/artifacts.list
+          { gh release create "$tag" "${files[@]}" \
               --title "${BUILD_TARGET} ${VERSION}" \
               --notes "Release of ${BUILD_TARGET} typed catalogs (${VERSION}), published to grc.store." \
               $prerelease \
-            || gh release upload "$tag" "$ARTIFACT" --clobber; } 2>&1 | tee /tmp/release.log
+            || gh release upload "$tag" "${files[@]}" --clobber; } 2>&1 | tee /tmp/release.log
 
       # Report-only: runs even when a stage above failed, never changes job status.
       - name: Write job summary
@@ -186,6 +220,7 @@ jobs:
         env:
           AUTHOR: ${{ steps.artifact.outputs.author }}
           ARTIFACT_ID: ${{ steps.artifact.outputs.artifact_id }}
+          COUNT: ${{ steps.artifact.outputs.count }}
           O_VERIFY: ${{ steps.verify.outcome }}
           O_COMPILE: ${{ steps.compile.outcome }}
           O_LOCATE: ${{ steps.artifact.outcome }}
@@ -226,13 +261,23 @@ jobs:
           # Plain-text stage status for the pipeline line.
           stat() { case "$1" in success) printf 'ok' ;; failure) printf 'FAIL' ;; skipped) printf 'skipped' ;; *) printf 'n/a' ;; esac; }
 
+          # Source cell + a label for "N artifacts" differ for the multi-document
+          # mappings type vs the single-file asset types.
+          if [ "$ASSET_TYPE" = "mappings" ]; then
+            source_cell="catalogs/${BUILD_TARGET}/mappings/"
+            verify_fail="Failed: no mapping documents under \`catalogs/${BUILD_TARGET}/mappings/\`"
+          else
+            source_cell="catalogs/${BUILD_TARGET}/${ASSET_TYPE}.yaml"
+            verify_fail="Failed: no source file at \`${source_cell}\`"
+          fi
+
           # First failing stage wins; otherwise it's a success (or a dry-run build).
           if [ "$O_VERIFY" = "failure" ]; then
-            result="Failed: no source file at \`catalogs/${BUILD_TARGET}/${ASSET_TYPE}.yaml\`"
+            result="$verify_fail"
           elif [ "$O_COMPILE" = "failure" ]; then
             result="Failed: compile — $(friendly_compile "$(cat /tmp/compile.log 2>/dev/null)")"
           elif [ "$O_LOCATE" = "failure" ]; then
-            result="Failed: compile produced no ${ASSET_TYPE}.yaml"
+            result="Failed: compile produced no artifact(s) for ${ASSET_TYPE}"
           elif [ "$O_VALIDATE" = "failure" ]; then
             result="Failed: schema validation — $(friendly_validate "$(cat /tmp/validate.log 2>/dev/null)")"
           elif [ "$O_PUBLISH" = "failure" ]; then
@@ -243,8 +288,13 @@ jobs:
             result="Built (dry run, not published)"
           else
             gh_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${BUILD_TARGET}/${VERSION}"
-            grc_url="https://grc.store/${AUTHOR}/${ARTIFACT_ID}/versions/${VERSION}"
-            result="Released — [GitHub release](${gh_url}) · [grc.store](${grc_url})"
+            if [ "$ASSET_TYPE" = "mappings" ]; then
+              grc_url="https://grc.store/${AUTHOR}"
+              result="Released ${COUNT} mapping doc(s) — [GitHub release](${gh_url}) · [grc.store](${grc_url})"
+            else
+              grc_url="https://grc.store/${AUTHOR}/${ARTIFACT_ID}/versions/${VERSION}"
+              result="Released — [GitHub release](${gh_url}) · [grc.store](${grc_url})"
+            fi
           fi
 
           {
@@ -254,5 +304,5 @@ jobs:
             echo ""
             echo "| Source | Result |"
             echo "| --- | --- |"
-            echo "| \`catalogs/${BUILD_TARGET}/${ASSET_TYPE}.yaml\` | ${result} |"
+            echo "| \`${source_cell}\` | ${result} |"
           } >> "$GITHUB_STEP_SUMMARY"
