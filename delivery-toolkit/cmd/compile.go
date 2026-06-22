@@ -87,14 +87,19 @@ func runCompile(cmd *cobra.Command, args []string) error {
 	}
 	service := serviceNameFromTitle(meta.title)
 
+	// Reference-architecture catalogs (build target leaf dir ending in "-refarch")
+	// are self-describing: they bring their own groups: block and do NOT draw from
+	// the shared core/ccc/groups.yaml vocabulary.
+	localGroups := strings.HasSuffix(filepath.Base(buildTarget), "-refarch")
+
 	var artifact any
 	switch assetType {
 	case "capabilities":
-		artifact, err = compileCapabilities(filepath.Join(srcDir, "capabilities.yaml"), meta.id, service, version, meta.coreVersion, groupDefs)
+		artifact, err = compileCapabilities(filepath.Join(srcDir, "capabilities.yaml"), meta.id, service, version, meta.coreVersion, groupDefs, localGroups)
 	case "threats":
-		artifact, err = compileThreats(filepath.Join(srcDir, "threats.yaml"), meta.id, service, version, meta.coreVersion, groupDefs)
+		artifact, err = compileThreats(filepath.Join(srcDir, "threats.yaml"), meta.id, service, version, meta.coreVersion, groupDefs, localGroups)
 	case "controls":
-		artifact, err = compileControls(filepath.Join(srcDir, "controls.yaml"), meta.id, service, version, meta.coreVersion, groupDefs)
+		artifact, err = compileControls(filepath.Join(srcDir, "controls.yaml"), meta.id, service, version, meta.coreVersion, groupDefs, localGroups)
 	}
 	if err != nil {
 		return err
@@ -178,13 +183,14 @@ func serviceNameFromTitle(title string) string {
 	return title
 }
 
-func compileCapabilities(path, catalogID, service, version, coreVersion string, groupDefs map[string]gemara.Group) (*gemara.CapabilityCatalog, error) {
+func compileCapabilities(path, catalogID, service, version, coreVersion string, groupDefs map[string]gemara.Group, localGroups bool) (*gemara.CapabilityCatalog, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("reading %s: %w", path, err)
 	}
 	var src struct {
 		Imported     []gemara.MultiEntryMapping `yaml:"imports"`
+		Groups       []gemara.Group             `yaml:"groups"`
 		Capabilities []gemara.Capability        `yaml:"capabilities"`
 	}
 	if err := yaml.Unmarshal(data, &src); err != nil {
@@ -194,7 +200,11 @@ func compileCapabilities(path, catalogID, service, version, coreVersion string, 
 		return nil, fmt.Errorf("%s: no capabilities to compile", path)
 	}
 
-	groups, err := resolveGroups(capabilityGroups(src.Capabilities), groupDefs)
+	defs, groupsSrc, err := groupDefsFor(localGroups, src.Groups, groupDefs, path)
+	if err != nil {
+		return nil, err
+	}
+	groups, err := resolveGroups(capabilityGroups(src.Capabilities), defs, groupsSrc)
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +221,7 @@ func compileCapabilities(path, catalogID, service, version, coreVersion string, 
 	}, nil
 }
 
-func compileThreats(path, catalogID, service, version, coreVersion string, groupDefs map[string]gemara.Group) (*gemara.ThreatCatalog, error) {
+func compileThreats(path, catalogID, service, version, coreVersion string, groupDefs map[string]gemara.Group, localGroups bool) (*gemara.ThreatCatalog, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("reading %s: %w", path, err)
@@ -220,6 +230,7 @@ func compileThreats(path, catalogID, service, version, coreVersion string, group
 	// ThreatCatalog schema has no such field.
 	var src struct {
 		Imported []gemara.MultiEntryMapping `yaml:"imports"`
+		Groups   []gemara.Group             `yaml:"groups"`
 		Threats  []gemara.Threat            `yaml:"threats"`
 	}
 	if err := yaml.Unmarshal(data, &src); err != nil {
@@ -233,7 +244,11 @@ func compileThreats(path, catalogID, service, version, coreVersion string, group
 	for i := range src.Threats {
 		src.Threats[i].Capabilities = regroupMappings(src.Threats[i].Capabilities)
 	}
-	groups, err := resolveGroups(threatGroups(src.Threats), groupDefs)
+	defs, groupsSrc, err := groupDefsFor(localGroups, src.Groups, groupDefs, path)
+	if err != nil {
+		return nil, err
+	}
+	groups, err := resolveGroups(threatGroups(src.Threats), defs, groupsSrc)
 	if err != nil {
 		return nil, err
 	}
@@ -270,13 +285,14 @@ type sourceAR struct {
 	Recommendation string   `yaml:"recommendation"`
 }
 
-func compileControls(path, catalogID, service, version, coreVersion string, groupDefs map[string]gemara.Group) (*gemara.ControlCatalog, error) {
+func compileControls(path, catalogID, service, version, coreVersion string, groupDefs map[string]gemara.Group, localGroups bool) (*gemara.ControlCatalog, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("reading %s: %w", path, err)
 	}
 	var src struct {
 		Imported []gemara.MultiEntryMapping `yaml:"imports"`
+		Groups   []gemara.Group             `yaml:"groups"`
 		Controls []sourceControl            `yaml:"controls"`
 	}
 	if err := yaml.Unmarshal(data, &src); err != nil {
@@ -322,7 +338,11 @@ func compileControls(path, catalogID, service, version, coreVersion string, grou
 		}
 	}
 
-	groups, err := resolveGroups(entries, groupDefs)
+	defs, groupsSrc, err := groupDefsFor(localGroups, src.Groups, groupDefs, path)
+	if err != nil {
+		return nil, err
+	}
+	groups, err := resolveGroups(entries, defs, groupsSrc)
 	if err != nil {
 		return nil, err
 	}
@@ -363,19 +383,39 @@ func threatGroups(ts []gemara.Threat) []entryGroup {
 	return out
 }
 
+// groupDefsFor selects which group definitions a catalog resolves against.
+// Reference-architecture catalogs (localGroups) are self-describing: they resolve
+// against their own inline groups: block and never touch the shared
+// core/ccc/groups.yaml vocabulary. Every other catalog uses the central defs.
+// The returned label names the source to cite in resolution errors.
+func groupDefsFor(localGroups bool, inline []gemara.Group, central map[string]gemara.Group, path string) (map[string]gemara.Group, string, error) {
+	if !localGroups {
+		return central, "catalogs/" + groupDefsPath, nil
+	}
+	if len(inline) == 0 {
+		return nil, "", fmt.Errorf("%s: reference-architecture catalog defines no groups: block to resolve against", path)
+	}
+	defs := make(map[string]gemara.Group, len(inline))
+	for _, g := range inline {
+		defs[g.Id] = g
+	}
+	return defs, path, nil
+}
+
 // resolveGroups enforces that every entry references a defined group and returns
 // the definitions to inject, in order of first reference. Missing or unknown
 // group ids are hard errors so grouping stays consistent across catalogs.
-func resolveGroups(entries []entryGroup, defs map[string]gemara.Group) ([]gemara.Group, error) {
+// groupsSrc names the file where valid groups are defined, for error messages.
+func resolveGroups(entries []entryGroup, defs map[string]gemara.Group, groupsSrc string) ([]gemara.Group, error) {
 	var order []string
 	seen := map[string]bool{}
 	for _, e := range entries {
 		id := strings.TrimSpace(e.group)
 		if id == "" {
-			return nil, fmt.Errorf("%s has no group; assign one of the groups defined in catalogs/%s", e.id, groupDefsPath)
+			return nil, fmt.Errorf("%s has no group; assign one of the groups defined in %s", e.id, groupsSrc)
 		}
 		if _, ok := defs[id]; !ok {
-			return nil, fmt.Errorf("%s references undefined group %q; add it to catalogs/%s", e.id, id, groupDefsPath)
+			return nil, fmt.Errorf("%s references undefined group %q; add it to %s", e.id, id, groupsSrc)
 		}
 		if !seen[id] {
 			seen[id] = true
