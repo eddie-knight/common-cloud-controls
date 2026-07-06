@@ -1,0 +1,225 @@
+imports:
+  - reference-id: CCC
+    entries:
+      - reference-id: CCC.Core.CN01
+        remarks: Encrypt Data for Transmission
+      - reference-id: CCC.Core.CN02
+        remarks: Encrypt Data for Storage
+      - reference-id: CCC.Core.CN03
+        remarks: Implement Multi-factor Authentication (MFA) for Access
+      - reference-id: CCC.Core.CN04
+        remarks: Log All Access and Changes
+      - reference-id: CCC.Core.CN05
+        remarks: Prevent Access from Untrusted Entities
+      - reference-id: CCC.Core.CN06
+        remarks: Restrict Deployments to Trust Perimeter
+      - reference-id: CCC.Core.CN07
+        remarks: Alert on Unusual Enumeration Activity
+      - reference-id: CCC.Core.CN08
+        remarks: Replicate Data to Multiple Locations
+      - reference-id: CCC.Core.CN09
+        remarks: Ensure Integrity of Access Logs
+      - reference-id: CCC.Core.CN10
+        remarks: Restrict Data Replication to Trust Perimeter
+      - reference-id: CCC.Core.CN11
+        remarks: Protect Encryption Keys
+      - reference-id: CCC.Core.CN14
+        remarks: Maintain Recent Backups
+
+controls:
+  - id: CCC.BlocStor.CN01
+    group: Encryption
+    title: Enforce Volume Encryption and Cryptographic Erasure
+    objective: |
+      Ensure that all block volumes and their snapshots are encrypted at rest
+      from creation and that their encryption keys are destroyed on deletion, so
+      that data on reallocated storage cannot be recovered by a later user.
+    assessment-requirements:
+      - id: CCC.BlocStor.CN01.AR01
+        text: |
+          When a block volume or snapshot is created, the service MUST encrypt
+          its data at rest using a unique cryptographic key AND MUST reject the
+          creation of an unencrypted volume or snapshot.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Enable account- or organization-wide default encryption for new
+          volumes and snapshots, and apply a policy that denies creation of
+          unencrypted resources.
+      - id: CCC.BlocStor.CN01.AR02
+        text: |
+          When a block volume or snapshot is created from an existing encrypted
+          source, the service MUST retain encryption on the resulting resource
+          AND MUST NOT produce an unencrypted copy.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: ""
+      - id: CCC.BlocStor.CN01.AR03
+        text: |
+          When a block volume is deleted, the service MUST render the volume's
+          data unrecoverable by destroying its encryption key or cryptographically
+          erasing the underlying storage before those blocks are reallocated.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Prefer per-volume keys so that key destruction alone renders residual
+          blocks unrecoverable without requiring physical overwrite.
+    threats:
+      - reference-id: CCC.BlocStor
+        entries:
+          - reference-id: CCC.BlocStor.TH01
+            remarks: Residual Data Remains on Reallocated Volume Storage
+            strength: 9 # Crypto-erase directly defeats remanence; residual ciphertext is unrecoverable without the key
+          - reference-id: CCC.BlocStor.TH05
+            remarks: Volumes are Provisioned Without Encryption
+            strength: 9 # Rejecting unencrypted creation closes the provisioning gap directly
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.TH18
+            remarks: Encryption Key is Misused
+            strength: 3 # Unique per-volume keys limit blast radius, but key management is broader than this control
+
+  - id: CCC.BlocStor.CN02
+    group: Data
+    title: Prevent Public or Cross-Account Snapshot Sharing
+    objective: |
+      Ensure that volume snapshots cannot be shared publicly or with accounts
+      outside the organization's trust boundary, preventing exposure of the
+      data captured in a snapshot.
+    assessment-requirements:
+      - id: CCC.BlocStor.CN02.AR01
+        text: |
+          When a snapshot sharing setting is configured to make the snapshot
+          publicly accessible, the service MUST prevent the configuration from
+          taking effect.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Enable an account-level block on public sharing of snapshots and images.
+      - id: CCC.BlocStor.CN02.AR02
+        text: |
+          When a snapshot is shared with another account, the service MUST deny
+          sharing with any account not listed as trusted by the organization.
+        applicability:
+          - tlp-amber
+          - tlp-red
+        recommendation: ""
+      - id: CCC.BlocStor.CN02.AR03
+        text: |
+          When a snapshot's sharing scope is created or modified, the service
+          MUST record the event including the snapshot identifier and the target
+          accounts.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: ""
+    threats:
+      - reference-id: CCC.BlocStor
+        entries:
+          - reference-id: CCC.BlocStor.TH02
+            remarks: Snapshots are Exposed to Unauthorized Accounts
+            strength: 8 # Blocks the primary exposure path; does not address an authorized account being compromised
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.TH01
+            remarks: Access is Granted to Unauthorized Users
+            strength: 3 # Addresses one sharing-based access path among many
+
+  - id: CCC.BlocStor.CN03
+    group: Access
+    title: Restrict Volume Attachment to Authorized Instances
+    objective: |
+      Ensure that a block volume can only be attached to compute instances
+      authorized within the volume's trust boundary, preventing data access
+      from instances outside that boundary.
+    assessment-requirements:
+      - id: CCC.BlocStor.CN03.AR01
+        text: |
+          When an attempt is made to attach a block volume to a compute instance,
+          the service MUST deny the attachment unless the requesting identity is
+          authorized to attach that volume to that instance.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Scope attach and detach permissions with least privilege, using
+          resource tags or identity conditions to bind volumes to authorized
+          instances.
+      - id: CCC.BlocStor.CN03.AR02
+        text: |
+          When a block volume is attached or detached, the service MUST record
+          the event including the volume identifier, the target instance, and the
+          requesting identity.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: ""
+    threats:
+      - reference-id: CCC.BlocStor
+        entries:
+          - reference-id: CCC.BlocStor.TH03
+            remarks: Volume is Attached to an Unauthorized Compute Instance
+            strength: 8 # Authorization on attach closes the primary path; depends on correct identity scoping
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.Core.TH01
+            remarks: Access is Granted to Unauthorized Users
+            strength: 4 # Constrains one block-level access path
+
+  - id: CCC.BlocStor.CN04
+    group: Data
+    title: Govern Multi-Attach with Shared-Reservation Controls
+    objective: |
+      Ensure that multi-attach is disabled by default and, when enabled,
+      concurrent access is coordinated so that simultaneous writes do not
+      corrupt the volume's file system or data.
+    assessment-requirements:
+      - id: CCC.BlocStor.CN04.AR01
+        text: |
+          When a block volume is created, the service MUST disable multi-attach
+          by default, requiring explicit configuration to enable it.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: ""
+      - id: CCC.BlocStor.CN04.AR02
+        text: |
+          When multi-attach is enabled for a block volume, the service MUST
+          support a write-coordination mechanism, such as persistent
+          reservations, so that concurrent writes from multiple instances are
+          serialized.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Pair multi-attach with a cluster-aware file system or volume manager;
+          do not expose a multi-attached volume to instances that write without
+          coordination.
+    threats:
+      - reference-id: CCC.BlocStor
+        entries:
+          - reference-id: CCC.BlocStor.TH04
+            remarks: Multi-Attached Volume is Corrupted by Uncoordinated Writes
+            strength: 7 # Disabling by default and requiring reservations prevents the common case; relies on workload using coordination correctly

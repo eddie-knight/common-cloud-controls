@@ -1,0 +1,27 @@
+metadata:
+  id: CCC.BlocStor
+  title: FINOS CCC Block Storage
+  description: |
+    Block Storage is a data management architecture that provisions raw,
+    block-level storage volumes which attach to compute instances and present
+    as unformatted block devices. Each volume can host a file system or a
+    database and persists independently of the lifecycle of the instance it is
+    attached to, making it well suited to low-latency, transactional, and
+    boot-volume workloads. It is highly durable and commonly used in cloud
+    environments for primary storage that requires consistent performance.
+  category-ids:
+    - CCC.Storage
+  example-csp-services:
+    - provider: AWS
+      service: Amazon Elastic Block Store (EBS)
+      url: https://docs.aws.amazon.com/ebs/
+    - provider: Azure
+      service: Azure Managed Disks
+      url: https://learn.microsoft.com/azure/virtual-machines/managed-disks-overview
+    - provider: GCP
+      service: Persistent Disk / Hyperdisk
+      url: https://cloud.google.com/compute/docs/disks
+  mapping-references:
+    - id: CCC.Core
+      title: FINOS CCC Core Catalog
+      version: v2025.10

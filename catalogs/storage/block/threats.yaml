@@ -1,0 +1,126 @@
+imports:
+  - reference-id: CCC
+    entries:
+      - reference-id: CCC.Core.TH01
+        remarks: Access is Granted to Unauthorized Users
+      - reference-id: CCC.Core.TH02
+        remarks: Data is Intercepted in Transit
+      - reference-id: CCC.Core.TH03
+        remarks: Deployment Region Network is Untrusted
+      - reference-id: CCC.Core.TH04
+        remarks: Data is Replicated to Untrusted or External Locations
+      - reference-id: CCC.Core.TH05
+        remarks: Interference with Replication Processes
+      - reference-id: CCC.Core.TH06
+        remarks: Data is Lost or Corrupted
+      - reference-id: CCC.Core.TH07
+        remarks: Logs are Tampered With or Deleted
+      - reference-id: CCC.Core.TH08
+        remarks: Runtime Metrics are Manipulated
+      - reference-id: CCC.Core.TH09
+        remarks: Runtime Logs are Read by Unauthorized Entities
+      - reference-id: CCC.Core.TH10
+        remarks: State-change Events are Read by Unauthorized Entities
+      - reference-id: CCC.Core.TH11
+        remarks: Publications are Incorrectly Triggered
+      - reference-id: CCC.Core.TH12
+        remarks: Resource Constraints are Exhausted
+      - reference-id: CCC.Core.TH13
+        remarks: Resource Tags are Manipulated
+      - reference-id: CCC.Core.TH15
+        remarks: Automated Enumeration and Reconnaissance by Non-human Entities
+      - reference-id: CCC.Core.TH16
+        remarks: Publications are Disabled
+      - reference-id: CCC.Core.TH18
+        remarks: Encryption Key is Misused
+      - reference-id: CCC.Core.TH19
+        remarks: Metrics are Read by Unauthorized Entities
+
+threats:
+  - id: CCC.BlocStor.TH01
+    group: Data
+    title: Residual Data Remains on Reallocated Volume Storage
+    description: |
+      When a block volume is deleted or detached, the underlying physical
+      storage blocks may be returned to a shared allocation pool before being
+      cryptographically erased or overwritten. Data written by a previous user
+      can then persist on the medium and be read when the same blocks are
+      provisioned to a subsequent volume. This results in a loss of
+      confidentiality of previously stored data.
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.BlocStor.CP01
+            remarks: Block Volumes
+          - reference-id: CCC.Core.CP02
+            remarks: Encryption at Rest Enabled by Default
+
+  - id: CCC.BlocStor.TH02
+    group: Data
+    title: Snapshots are Exposed to Unauthorized Accounts
+    description: |
+      Volume snapshots may be configured as publicly accessible or shared with
+      external accounts through sharing settings or time-limited access tokens.
+      An external system can then create a new volume from the exposed snapshot
+      and read its full contents outside the original trust boundary. This
+      results in a loss of confidentiality of all data captured in the snapshot.
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.BlocStor.CP01
+            remarks: Block Volumes
+          - reference-id: CCC.Core.CP11
+            remarks: Backup
+
+  - id: CCC.BlocStor.TH03
+    group: Access
+    title: Volume is Attached to an Unauthorized Compute Instance
+    description: |
+      A detached block volume may be attached to a compute instance other than
+      the one it was provisioned for when attachment permissions are scoped too
+      broadly. The instance then gains direct block-level access to the volume's
+      file system, bypassing access controls enforced within the originally
+      attached instance. This results in a loss of confidentiality and integrity
+      of the data on the volume.
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.BlocStor.CP02
+            remarks: Volume Attachment
+          - reference-id: CCC.BlocStor.CP03
+            remarks: Boot Volumes
+
+  - id: CCC.BlocStor.TH04
+    group: Data
+    title: Multi-Attached Volume is Corrupted by Uncoordinated Writes
+    description: |
+      When a single block volume is attached to multiple compute instances
+      without a cluster-aware file system to serialize access, concurrent writes
+      to the same blocks are applied without coordination. The file system
+      metadata and stored data can then become inconsistent or unreadable. This
+      results in a loss of integrity and availability of the data on the volume.
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.BlocStor.CP04
+            remarks: Multi-Attach Volumes
+
+  - id: CCC.BlocStor.TH05
+    group: Encryption
+    title: Volumes are Provisioned Without Encryption
+    description: |
+      Volumes or snapshot copies may be provisioned with encryption disabled, or
+      created from an unencrypted source, when encryption is not enforced by
+      organizational policy. Data is then written to the storage medium in
+      cleartext and can be read by any entity that obtains access to the
+      underlying blocks or a copy of the volume. This results in a loss of
+      confidentiality of the stored data.
+    capabilities:
+      - reference-id: CCC
+        entries:
+          - reference-id: CCC.BlocStor.CP01
+            remarks: Block Volumes
+          - reference-id: CCC.Core.CP02
+            remarks: Encryption at Rest Enabled by Default
+          - reference-id: CCC.BlocStor.CP08
+            remarks: Customer-Managed Encryption Keys

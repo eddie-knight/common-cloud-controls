@@ -1,0 +1,96 @@
+imports:
+  - reference-id: CCC
+    entries:
+      - reference-id: CCC.Core.CP02
+        remarks: Encryption at Rest Enabled by Default
+      - reference-id: CCC.Core.CP03
+        remarks: Access Log Publication
+      - reference-id: CCC.Core.CP06
+        remarks: Access Control
+      - reference-id: CCC.Core.CP07
+        remarks: Event Publication
+      - reference-id: CCC.Core.CP08
+        remarks: Data Replication
+      - reference-id: CCC.Core.CP09
+        remarks: Metrics Publication
+      - reference-id: CCC.Core.CP11
+        remarks: Backup
+      - reference-id: CCC.Core.CP12
+        remarks: Recovery
+      - reference-id: CCC.Core.CP14
+        remarks: API Access
+      - reference-id: CCC.Core.CP15
+        remarks: Cost Management
+      - reference-id: CCC.Core.CP16
+        remarks: Budgeting
+      - reference-id: CCC.Core.CP20
+        remarks: Resource Tagging
+      - reference-id: CCC.Core.CP22
+        remarks: Location Lock-In
+      - reference-id: CCC.Core.CP28
+        remarks: Command-line Interface
+
+capabilities:
+  - id: CCC.BlocStor.CP01
+    group: Data
+    title: Block Volumes
+    description: |
+      The service can provision block-level storage volumes that present as raw,
+      unformatted block devices, allowing a user to create a file system or write
+      data directly to the device.
+
+  - id: CCC.BlocStor.CP02
+    group: Compute
+    title: Volume Attachment
+    description: |
+      The service can attach a block volume to a compute instance and detach it
+      later, so that the same volume may be moved between instances over its
+      lifecycle while persisting data independently of any one instance.
+
+  - id: CCC.BlocStor.CP03
+    group: Compute
+    title: Boot Volumes
+    description: |
+      The service may be configured to serve a block volume as the bootable root
+      device of a compute instance, persisting the operating system and its state
+      across instance restarts.
+
+  - id: CCC.BlocStor.CP04
+    group: Access
+    title: Multi-Attach Volumes
+    description: |
+      The service may be configured to attach a single block volume to multiple
+      compute instances simultaneously, enabling clustered or shared-access
+      workloads that coordinate concurrent writes externally.
+
+  - id: CCC.BlocStor.CP05
+    group: Resource
+    title: Volume Resizing
+    description: |
+      The service can increase the capacity of an existing block volume, often
+      while it remains attached, so that storage can grow to meet demand without
+      provisioning a new volume.
+
+  - id: CCC.BlocStor.CP06
+    group: Resource
+    title: Volume Types
+    description: |
+      The service provides multiple volume types with differing performance and
+      cost characteristics, such as solid-state and magnetic media, allowing a
+      user to match a volume to the needs of a workload.
+
+  - id: CCC.BlocStor.CP07
+    group: Resource
+    title: Provisioned Performance
+    description: |
+      The service may be configured to provision a target level of input/output
+      operations per second (IOPS) and throughput for a block volume independently
+      of its capacity, so that performance can be tuned to a workload.
+
+  - id: CCC.BlocStor.CP08
+    group: Encryption
+    title: Customer-Managed Encryption Keys
+    description: |
+      The service may be configured to encrypt volume data at rest using
+      customer-managed keys, allowing a user to control the key lifecycle and
+      revoke access to stored data.
