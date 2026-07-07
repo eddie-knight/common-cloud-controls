@@ -20,11 +20,12 @@ the skill exactly** — including any per-step output formats and confirmation g
 The typical onboarding flow for a new service runs these in order: capability →
 threat → control → behavioural-test-analysis → features-and-cloud-api.
 
-> Note: Claude Code also discovers each skill via a pointer at
-> `.claude/skills/<skill-name>/SKILL.md`, which defers to the canonical file in
-> `skills/`. The `skills/` directory remains the single source of truth — keep
-> skill content there, and add a matching `.claude/skills/` pointer for any new
-> skill.
+> Note: agents with native skill loaders discover each skill via a pointer file
+> that defers to the canonical file in `skills/`: Claude Code reads
+> `.claude/skills/<skill-name>/SKILL.md`, while OpenAI Codex and GitHub Copilot
+> read `.agents/skills/<skill-name>/SKILL.md`. The `skills/` directory remains
+> the single source of truth — keep skill content there, and add matching
+> pointers in both locations for any new skill.
 
 ## Catalog conventions
 
